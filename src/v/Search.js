@@ -5,37 +5,7 @@ import {Actions} from "react-native-router-flux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 //import SQLite from 'react-native-sqlite-storage'
 import GooglePlace from '../api/GooglePlace';
-
-var styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-		top: 55,
-		left: 0,
-		right: 0,
-		bottom: 0,
-        backgroundColor: "#F5FCFF",
-    },
-	section:{
-		//flex: 1,
-		justifyContent: 'center',
-		//alignItems: 'center',
-		flexDirection:'row',
-	},
-	title:{
-		//backgroundColor:'#eeeeee',
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: 6,
-	},
-	title_name:{
-		fontWeight:'bold',
-		fontSize:20,
-	},
-	separator: {
-        height: 1,
-        backgroundColor: '#CCCCCC',
-	},
-});
+import styles from './Styles'
 
 export default class FunctionEdit extends React.Component {
 	constructor(props) {
@@ -110,7 +80,7 @@ export default class FunctionEdit extends React.Component {
 	}
     render(){
         return (
-            <View style={styles.container}>
+            <View style={styles.map}>
 				<View style={styles.section}>
 					<View style={styles.title}>
 						<Text style={styles.title_name}>Destination</Text>

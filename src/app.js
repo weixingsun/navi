@@ -7,6 +7,7 @@ import Home from './v/Home'
 import About  from './v/About'
 import Search from './v/Search'
 import MultiLang from './lang/all'
+import {Provider} from 'react-redux'
 export default class App extends Component {
     constructor(props) {
         super(props);

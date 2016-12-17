@@ -5,65 +5,7 @@ import {Actions} from "react-native-router-flux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import Permissions from 'react-native-permissions';
-
-var styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F5FCFF",
-    },
-    listContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        marginTop:Platform.OS==='android'?54:64,
-    },
-	map: {
-		position: 'absolute',
-		top: 54,
-		left: 0,
-		right: 0,
-		bottom: 0,
-	},
-    separator: {
-        height: 1,
-        backgroundColor: '#CCCCCC',
-    },
-	place: {
-		position: 'absolute',
-		top: 55,
-		left: 0,
-		right: 0,
-		bottom: 0,
-        //justifyContent: "flex-end",
-        //alignItems: "center",
-	},
-	inner_place:{
-		backgroundColor:'white',
-		height:150,
-		width:Dimensions.get('window').width,
-	},
-	inner_search:{
-		backgroundColor:'white',
-		height:90,
-		width:Dimensions.get('window').width-60,
-	},
-	address:{
-		fontWeight:'bold',
-		fontSize:16,
-		marginTop:5,
-		marginLeft:30,
-	},
-	search_icon:{
-		marginLeft:15,
-		marginTop:10,
-		marginRight:10,
-	},
-	search_input:{
-		flex:1,
-		height:45,
-	},
-});
+import styles from './Styles'
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -107,7 +49,8 @@ export default class Home extends React.Component {
 				//{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
 				if(this.updateOnUI){
 					let my = this.setStartAddressLatLng(position.coords)
-					let temp = this.state.start.latitude ? this.state.start : my
+					let temp = this.state.start.lat ? this.state.start : my
+					alert('watchPosition my='+JSON.stringify(my)+' start='+JSON.stringify(temp))
 					this.setState({
 						my:   my,
 						start:temp,
@@ -181,38 +124,48 @@ export default class Home extends React.Component {
 			)
 		}
 	}
+	getSecondCommaIndex(name){
+		let arr = name.split(',')
+		return arr[0].length+arr[1].length+1
+	}
+	renderAddress(name){
+		if(name.length<30) return <Text style={styles.address}>{name}</Text>
+		else return (
+		<View style={{marginTop:15}}>
+			<Text style={styles.address}>{name.substr(0,this.getSecondCommaIndex(name))}</Text>
+			<Text style={styles.address}>{name.substr(this.getSecondCommaIndex(name)+1).trim()}</Text>
+			<Text>start={JSON.stringify(this.state.start)}</Text>
+		</View>
+		)
+	}
 	renderPlaceView(){
 		if(this.state.dest.address){
 			return (
 				<View style={styles.inner_place}>
 					<View style={{flexDirection:'row',marginTop:15,}}>
-						<Icon style={{marginLeft:30}} name={'car'} size={40} onPress={()=>alert('car')} />
-						<Icon style={{marginLeft:30}} name={'bus'} size={40} onPress={()=>alert('bus')} />
-						<Icon style={{marginLeft:35}} name={'male'} size={40} onPress={()=>alert('walk')} />
+						<Icon style={{marginLeft:30}} name={'car'}  size={40} onPress={this.routeCar.bind(this)} />
+						<Icon style={{marginLeft:30}} name={'bus'}  size={40} onPress={this.routeBus.bind(this)} />
+						<Icon style={{marginLeft:35}} name={'male'} size={40} onPress={this.routeWalk.bind(this)} />
 					</View>
 					{this.renderAddress(this.state.dest.address)}
 				</View>
 			)
 		}
 	}
-	getSecondCommaIndex(name){
-		let arr = name.split(',')
-		return arr[0].length+arr[1].length+1
+	routeCar(){
+		alert('car from:'+JSON.stringify(this.state.start)+'\nto '+JSON.stringify(this.state.dest))
+		let url = 'https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Queens&key'
 	}
-	renderAddress(name){
-		//alert(this.getSecondCommaIndex(name))
-		
-		if(name.length<30) return <Text style={styles.address}>{name}</Text>
-		else return (
-		<View style={{marginTop:15}}>
-			<Text style={styles.address}>{name.substr(0,this.getSecondCommaIndex(name))}</Text>
-			<Text style={styles.address}>{name.substr(this.getSecondCommaIndex(name)+1).trim()}</Text>
-		</View>
-		)
+	routeBus(){
+		alert('bus from:'+JSON.stringify(this.state.start)+'\nto '+JSON.stringify(this.state.dest))
+		let url = 'https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Queens&mode=transit&key'
+	}
+	routeWalk(){
+		alert('walk from:'+JSON.stringify(this.state.start)+'\nto '+JSON.stringify(this.state.dest))
+		let url = 'https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Queens&mode=walk&key'
 	}
     render(){
-		//alert(this.state.markers.length)
-        return (
+		return (
 		<View style={styles.container}>
 			<MapView style={styles.map}
 				region={this.state.region}
