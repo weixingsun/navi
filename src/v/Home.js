@@ -43,6 +43,12 @@ var styles = StyleSheet.create({
 		height:200,
 		width:Dimensions.get('window').width,
 	},
+	address:{
+		fontWeight:'bold',
+		fontSize:20,
+		marginTop:10,
+		marginLeft:30,
+	}
 });
 
 export default class Home extends React.Component {
@@ -105,11 +111,30 @@ export default class Home extends React.Component {
 			return (
 				<View style={styles.place}>
 					<View style={styles.inner_place}>
-						<Text style={{fontWeight:'bold'}}>{JSON.stringify(this.state.dest)}</Text>
+						<View style={{flexDirection:'row'}}>
+							<Icon style={{marginLeft:30}} name={'car'} size={50} onPress={()=>alert('car')} />
+							<Icon style={{marginLeft:30}} name={'bus'} size={50} onPress={()=>alert('bus')} />
+							<Icon style={{marginLeft:30}} name={'male'} size={50} onPress={()=>alert('walk')} />
+						</View>
+						{this.renderAddress(this.state.dest.dest)}
 					</View>
 				</View>
 			)
 		}
+	}
+	getSecondCommaIndex(name){
+		let arr = name.split(',')
+		return arr[0].length+arr[1].length+1
+	}
+	renderAddress(name){
+		//alert(this.getSecondCommaIndex(name))
+		if(name.length<30) return <Text style={styles.address}>{name}</Text>
+		else return (
+		<View>
+			<Text style={styles.address}>{name.substr(0,this.getSecondCommaIndex(name))}</Text>
+			<Text style={styles.address}>{name.substr(this.getSecondCommaIndex(name)+1).trim()}</Text>
+		</View>
+		)
 	}
     render(){
 		//alert(this.state.markers.length)
