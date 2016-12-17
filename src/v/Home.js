@@ -4,6 +4,7 @@ import {Dimensions, ListView, Platform, StyleSheet, Text, TouchableHighlight, Vi
 import {Actions} from "react-native-router-flux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
+import Permissions from 'react-native-permissions';
 
 var styles = StyleSheet.create({
     container: {
@@ -19,7 +20,7 @@ var styles = StyleSheet.create({
     },
 	map: {
 		position: 'absolute',
-		top: 0,
+		top: 54,
 		left: 0,
 		right: 0,
 		bottom: 0,
@@ -36,8 +37,8 @@ export default class Home extends React.Component {
         this.ds= new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state={ 
             region:{
-				latitude: 39.0458,
-				longitude: -76.6413,
+				latitude: 38.984942,
+				longitude: -76.942706,
 				latitudeDelta: 0.1,
 				longitudeDelta: 0.1,
 			},
@@ -45,25 +46,38 @@ export default class Home extends React.Component {
     }
     componentWillMount() {
         //this.addRunIcon()
+		this.checkGpsPermission()
     }
     componentWillReceiveProps(nextProps) {
-        //nextProps={onNavigate,navigationState,name,sceneKey,parent,type,title,initial,drawerIcon,component,index,file,from}
-        //alert('componentWillReceiveProps: file'+JSON.stringify(nextProps.file))
-        if(nextProps.file!==null){
-            //this.readFile(nextProps.file);
-        //}else if(nextProps.content){
-        //    this.setState({content:nextProps.content})
+		//console.log('componentWillReceiveProps == '+Object.keys(nextProps))
+        if(nextProps.dest){
+			alert('dest='+JSON.stringify(nextProps.dest))
         }
     }
+	checkGpsPermission(){
+		Permissions.getPermissionStatus('location').then(response => {
+			//['authorized', 'denied', 'restricted', 'undetermined']
+			//this.setState({ gpsPermission: response })
+			//alert('gps='+response)
+			if(response!=='authorized') this.askGpsPermission()
+		});
+	}
+	askGpsPermission(){
+		Permissions.requestPermission('location').then(response => {
+			//returns once the user has chosen to 'allow' or to 'not allow' access
+			//response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
+			this.setState({ gpsPermission: response })
+		});
+	}
     render(){
         return (
 			<MapView style={styles.map}
 				region={this.state.region}
 				initialRegion={this.state.region}
 				showsUserLocation={true}
-              rotateEnabled={false}
-			  showsCompass={true}
-              showsScale={true}
+				rotateEnabled={false}
+				showsCompass={true}
+				showsScale={true}
 			/>
         );
     }
