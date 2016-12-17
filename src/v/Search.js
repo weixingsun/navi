@@ -103,11 +103,7 @@ export default class FunctionEdit extends React.Component {
 		if(json.dest){
 			Actions.refresh({
 				key:'search',
-				renderRightButton: ()=> {
-					return <Icon name={'play'} size={20} color={'#333'} onPress={()=> {
-						Actions.pop({refresh:{dest: json}})
-					}}/>
-				}
+				renderRightButton: ()=> <Icon name={'play'} size={20} color={'#333'} onPress={()=> Actions.pop({refresh:{dest: json}})}/>
 			})
 		}
 	}

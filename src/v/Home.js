@@ -29,6 +29,20 @@ var styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#CCCCCC',
     },
+	place: {
+		position: 'absolute',
+		top: 500,
+		left: 0,
+		right: 0,
+		bottom: 0,
+        justifyContent: "flex-end",
+        alignItems: "center",
+	},
+	inner_place:{
+		backgroundColor:'white',
+		height:200,
+		width:Dimensions.get('window').width,
+	},
 });
 
 export default class Home extends React.Component {
@@ -86,9 +100,21 @@ export default class Home extends React.Component {
             />
 		})
 	}
+	renderPlaceView(){
+		if(this.state.dest){
+			return (
+				<View style={styles.place}>
+					<View style={styles.inner_place}>
+						<Text style={{fontWeight:'bold'}}>{JSON.stringify(this.state.dest)}</Text>
+					</View>
+				</View>
+			)
+		}
+	}
     render(){
 		//alert(this.state.markers.length)
         return (
+		<View style={styles.container}>
 			<MapView style={styles.map}
 				region={this.state.region}
 				initialRegion={this.state.region}
@@ -99,6 +125,8 @@ export default class Home extends React.Component {
 			>
 			{this.renderMarkers()}
 			</MapView>
+			{this.renderPlaceView()}
+		</View>
         );
     }
 }
