@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, ListView, Platform, StyleSheet, Text, TouchableHighlight, View, } from "react-native";
+import {Dimensions, ListView, Platform, StyleSheet, Text, TextInput, TouchableHighlight, View, } from "react-native";
 //import Button from "react-native-button";
 import {Actions} from "react-native-router-flux";
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -31,24 +31,38 @@ var styles = StyleSheet.create({
     },
 	place: {
 		position: 'absolute',
-		top: 500,
+		top: 55,
 		left: 0,
 		right: 0,
 		bottom: 0,
-        justifyContent: "flex-end",
-        alignItems: "center",
+        //justifyContent: "flex-end",
+        //alignItems: "center",
 	},
 	inner_place:{
 		backgroundColor:'white',
-		height:200,
+		height:150,
 		width:Dimensions.get('window').width,
+	},
+	inner_search:{
+		backgroundColor:'white',
+		height:90,
+		width:Dimensions.get('window').width-60,
 	},
 	address:{
 		fontWeight:'bold',
-		fontSize:20,
-		marginTop:10,
+		fontSize:16,
+		marginTop:5,
 		marginLeft:30,
-	}
+	},
+	search_icon:{
+		marginLeft:15,
+		marginTop:10,
+		marginRight:10,
+	},
+	search_input:{
+		flex:1,
+		height:45,
+	},
 });
 
 export default class Home extends React.Component {
@@ -62,23 +76,54 @@ export default class Home extends React.Component {
 				latitudeDelta: 0.1,
 				longitudeDelta: 0.1,
 			},
-			dest:null,
+			my:{},
+			start:{},
+			dest:{},
 			markers:[],
         }
+		this.updateOnUI=true
     }
     componentWillMount() {
         //this.addRunIcon()
 		this.checkGpsPermission()
     }
     componentWillReceiveProps(nextProps) {
-		//console.log('componentWillReceiveProps == '+Object.keys(nextProps))
         if(nextProps.dest){
-			//alert('dest='+JSON.stringify(nextProps.dest))
 			this.setState({
 				markers:[nextProps.dest],
 				dest:nextProps.dest,
 			})
         }
+    }
+	setStartAddressLatLng(latlng){
+		return {
+			lat:latlng.latitude,
+			lng:latlng.longitude,
+			address:'My Location',
+		}
+	}
+	turnOnGps(){
+        this.watchID = navigator.geolocation.watchPosition((position) => {
+				//{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
+				if(this.updateOnUI){
+					let my = this.setStartAddressLatLng(position.coords)
+					let temp = this.state.start.latitude ? this.state.start : my
+					this.setState({
+						my:   my,
+						start:temp,
+					})
+				}
+			},(error) => console.log(error.message),
+			{enableHighAccuracy: false, timeout: 10000, maximumAge: 1000, distanceFilter:100},
+        );
+    }
+    turnOffGps(){
+        if(this.watchID==null) return
+        navigator.geolocation.clearWatch(this.watchID);
+    }
+	componentWillUnmount() { 
+		this.turnOffGps();
+		this.updateOnUI=false
     }
 	checkGpsPermission(){
 		Permissions.getPermissionStatus('location').then(response => {
@@ -86,13 +131,16 @@ export default class Home extends React.Component {
 			//this.setState({ gpsPermission: response })
 			//alert('gps='+response)
 			if(response!=='authorized') this.askGpsPermission()
+			else this.turnOnGps()
 		});
 	}
 	askGpsPermission(){
 		Permissions.requestPermission('location').then(response => {
-			//returns once the user has chosen to 'allow' or to 'not allow' access
-			//response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-			this.setState({ gpsPermission: response })
+			//['authorized', 'denied', 'restricted', 'undetermined']
+			if(response==='authorized'){
+				this.turnOnGps()
+				this.setState({ gpsPermission: response })
+			}
 		});
 	}
 	renderMarkers(){
@@ -106,18 +154,43 @@ export default class Home extends React.Component {
             />
 		})
 	}
-	renderPlaceView(){
-		if(this.state.dest){
+	renderStartDest(){
+		if(this.state.dest.address){
+			return (
+				<View style={styles.inner_search}>
+					<View style={{flexDirection:'row'}}>
+						<Icon style={styles.search_icon} name={'circle-o'} size={20} onPress={()=>alert('start')} />
+						<TextInput style={styles.search_input} onChangeText={(text) => this.setState({text})} value={this.state.start.address} />
+					</View>
+					<View style={{flexDirection:'row'}}>
+						<Icon style={styles.search_icon} name={'flag-o'} size={20} onPress={()=>alert('dest')} />
+						<TextInput style={styles.search_input} onChangeText={(text) => this.setState({text})} value={this.state.dest.address} />
+					</View>
+				</View>
+			)
+		}
+	}
+	renderView(){
+		if(this.state.dest.address){
 			return (
 				<View style={styles.place}>
-					<View style={styles.inner_place}>
-						<View style={{flexDirection:'row'}}>
-							<Icon style={{marginLeft:30}} name={'car'} size={50} onPress={()=>alert('car')} />
-							<Icon style={{marginLeft:30}} name={'bus'} size={50} onPress={()=>alert('bus')} />
-							<Icon style={{marginLeft:30}} name={'male'} size={50} onPress={()=>alert('walk')} />
-						</View>
-						{this.renderAddress(this.state.dest.dest)}
+					{this.renderStartDest()}
+					<View style={{flex:1}}/>
+					{this.renderPlaceView()}
+				</View>
+			)
+		}
+	}
+	renderPlaceView(){
+		if(this.state.dest.address){
+			return (
+				<View style={styles.inner_place}>
+					<View style={{flexDirection:'row',marginTop:15,}}>
+						<Icon style={{marginLeft:30}} name={'car'} size={40} onPress={()=>alert('car')} />
+						<Icon style={{marginLeft:30}} name={'bus'} size={40} onPress={()=>alert('bus')} />
+						<Icon style={{marginLeft:35}} name={'male'} size={40} onPress={()=>alert('walk')} />
 					</View>
+					{this.renderAddress(this.state.dest.address)}
 				</View>
 			)
 		}
@@ -128,9 +201,10 @@ export default class Home extends React.Component {
 	}
 	renderAddress(name){
 		//alert(this.getSecondCommaIndex(name))
+		
 		if(name.length<30) return <Text style={styles.address}>{name}</Text>
 		else return (
-		<View>
+		<View style={{marginTop:15}}>
 			<Text style={styles.address}>{name.substr(0,this.getSecondCommaIndex(name))}</Text>
 			<Text style={styles.address}>{name.substr(this.getSecondCommaIndex(name)+1).trim()}</Text>
 		</View>
@@ -150,7 +224,7 @@ export default class Home extends React.Component {
 			>
 			{this.renderMarkers()}
 			</MapView>
-			{this.renderPlaceView()}
+			{this.renderView()}
 		</View>
         );
     }

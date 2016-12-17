@@ -91,16 +91,17 @@ export default class FunctionEdit extends React.Component {
 	}
 	setDestination(json){
 		this.setState({
-			dest:json.dest,
+			dest:json.address,
 			destLat:json.lat,
 			destLng:json.lng,
 		});
 		this.appendHistoryDB(json);
 		//alert('data='+JSON.stringify(json))
-		this.updateActionIcon(json)
+		//this.updateActionIcon(json)
+		Actions.pop({refresh:{dest: json}})
 	}
 	updateActionIcon(json){
-		if(json.dest){
+		if(json.address){
 			Actions.refresh({
 				key:'search',
 				renderRightButton: ()=> <Icon name={'play'} size={20} color={'#333'} onPress={()=> Actions.pop({refresh:{dest: json}})}/>
@@ -121,7 +122,7 @@ export default class FunctionEdit extends React.Component {
 						fetchDetails={true}		//for getting latlng
 						onPress={(data, details = {}) => { // details is provided when fetchDetails = true
 							let dest_latlng = {
-								dest:   data.description,
+								address: data.description,
 								lat:details.geometry.location.lat,
 								lng:details.geometry.location.lng,
 								//type:details.types,
