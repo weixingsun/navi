@@ -20,17 +20,16 @@ export default class App extends Component {
     render() {
         let drIcon=<Icon style={{marginLeft:6}} name={"bars"} color={"#2a2929"} size={30}/>
 		//title="Home" hideNavBar={false} 
+		//<Scene key="root">
         return (
             <Router>
-			<Scene key="root">
                 <Scene key="drawer" component={Drawer} open={false} type={"reset"} >
                 <Scene key="content">
-                    <Scene key="home" component={Home} initial={true} drawerIcon={drIcon} renderRightButton={this.renderQueryIcon}/>
+                    <Scene key="home" component={Home} initial={true} type={ActionConst.RESET} drawerIcon={drIcon} renderRightButton={this.renderQueryIcon}/>
                     <Scene key="about" component={About} title="About Navi" />
 					<Scene key="search" component={Search} title="" />
                 </Scene>
                 </Scene>
-            </Scene>
             </Router>
         )
     }

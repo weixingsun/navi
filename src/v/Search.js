@@ -105,8 +105,7 @@ export default class FunctionEdit extends React.Component {
 				key:'search',
 				renderRightButton: ()=> {
 					return <Icon name={'play'} size={20} color={'#333'} onPress={()=> {
-						Actions.pop()
-						Actions.refresh({key:'home',dest: json})
+						Actions.pop({refresh:{dest: json}})
 					}}/>
 				}
 			})

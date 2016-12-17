@@ -42,6 +42,8 @@ export default class Home extends React.Component {
 				latitudeDelta: 0.1,
 				longitudeDelta: 0.1,
 			},
+			dest:null,
+			markers:[],
         }
     }
     componentWillMount() {
@@ -51,7 +53,11 @@ export default class Home extends React.Component {
     componentWillReceiveProps(nextProps) {
 		//console.log('componentWillReceiveProps == '+Object.keys(nextProps))
         if(nextProps.dest){
-			alert('dest='+JSON.stringify(nextProps.dest))
+			//alert('dest='+JSON.stringify(nextProps.dest))
+			this.setState({
+				markers:[nextProps.dest],
+				dest:nextProps.dest,
+			})
         }
     }
 	checkGpsPermission(){
@@ -69,7 +75,19 @@ export default class Home extends React.Component {
 			this.setState({ gpsPermission: response })
 		});
 	}
+	renderMarkers(){
+		return this.state.markers.map((marker,i)=>{
+			return <MapView.Marker
+				key={i}
+                coordinate={{latitude:marker.lat, longitude:marker.lng}}
+                //image={ placeIcon }
+                //onPress={ ()=> this.showMsgByKey(key) }
+				pinColor={'#ff0000'}
+            />
+		})
+	}
     render(){
+		//alert(this.state.markers.length)
         return (
 			<MapView style={styles.map}
 				region={this.state.region}
@@ -78,7 +96,9 @@ export default class Home extends React.Component {
 				rotateEnabled={false}
 				showsCompass={true}
 				showsScale={true}
-			/>
+			>
+			{this.renderMarkers()}
+			</MapView>
         );
     }
 }
