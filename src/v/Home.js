@@ -29,15 +29,22 @@ export default class Home extends React.Component {
         }
 		this.updateOnUI=true
     }
+	componentWillUnmount() { 
+		this.turnOffGps();
+		this.updateOnUI=false
+    }
     componentWillMount() {
         //this.addRunIcon()
 		this.checkGpsPermission()
     }
     componentWillReceiveProps(nextProps) {
         if(nextProps.dest!==null){
+			//dest = {address,lat,lng}
+			alert(JSON.stringify(nextProps.dest))
 			this.setState({
 				markers:[nextProps.dest],
 				dest:nextProps.dest,
+				region:{...this.state.region,latitude:nextProps.dest.lat,longitude:nextProps.dest.lng},
 			})
 			//console.log('componentWillReceiveProps() props='+Object.keys(nextProps))
 			this.changeClearIcon()
@@ -87,10 +94,6 @@ export default class Home extends React.Component {
     turnOffGps(){
         if(this.watchID==null) return
         navigator.geolocation.clearWatch(this.watchID);
-    }
-	componentWillUnmount() { 
-		this.turnOffGps();
-		this.updateOnUI=false
     }
 	checkGpsPermission(){
 		Permissions.getPermissionStatus('location').then(response => {
@@ -196,15 +199,18 @@ export default class Home extends React.Component {
 			let distance = routeJson.routes[0].legs[0].distance.text
 			let duration = routeJson.routes[0].legs[0].duration.text
 			let steps    = routeJson.routes[0].legs[0].steps
-			let info = {distance,duration,steps}
+			let ne = routeJson.routes[0].bounds.northeast
+			let sw = routeJson.routes[0].bounds.southwest
+			let region = {
+				latitude: (ne.lat+sw.lat)/2,
+				longitude: (ne.lng+sw.lng)/2,
+				latitudeDelta: Math.abs(ne.lat - sw.lat)+0.05,
+				longitudeDelta: Math.abs(ne.lng - sw.lng)+0.05,
+			}
 			//alert('steps='+steps.length+' steps= '+JSON.stringify(steps))
-			this.setState({
-				distance:distance,
-				duration:duration,
-				steps:steps,
-			})
+			this.setState({ distance,duration,steps,mode,region })
 		}else{
-			//alert('error routeJson='+JSON.stringify(routeJson))
+			alert('route failed: '+routeJson.error_message)
 		}
 	}
 	renderPolylines(){
