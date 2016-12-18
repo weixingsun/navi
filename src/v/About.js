@@ -57,7 +57,7 @@ export default class Group extends React.Component {
                 <Text style={{justifyContent:'center'}} > </Text>
                 <Image 
                     style={{width: 100, height: 100, backgroundColor:'white'}}
-                    source={require('../../img/xrows.png')}
+                    source={require('../../img/icon.png')}
                 />
                 <Text style={{justifyContent:'center'}} >{I18n.t('xrows')} 1.0.0</Text>
                 <Text style={{justifyContent:'center'}} > </Text>

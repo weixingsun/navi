@@ -26,7 +26,7 @@ export default class Home extends React.Component {
 			steps:[],
 			duration:'',
 			distance:'',
-			mode:'driving',
+			mode:'',
         }
 		this.updateOnUI=true
     }
@@ -132,12 +132,12 @@ export default class Home extends React.Component {
 	}
 	renderView(){
 		if(this.state.dest.address){
+			//<View style={styles.place}>
 			return (
-				<View style={styles.place}>
-					{this.renderStartDest()}
-					<View style={{flex:1}}/>
-					{this.renderPlaceView()}
-				</View>
+			<View style={styles.place}>
+				{this.renderStartDest()}
+				{this.renderPlaceView()}
+                        </View>
 			)
 		}
 	}
@@ -264,8 +264,10 @@ export default class Home extends React.Component {
 			{this.renderMarkers()}
 			{this.renderPolylines()}
 			</MapView>
-			{this.renderView()}
+                        {this.renderStartDest()}
+                        {this.renderPlaceView()}
 		</View>
         );
+        //{this.renderView()}
     }
 }

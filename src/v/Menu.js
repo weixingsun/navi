@@ -3,7 +3,7 @@ import {Alert, Platform, View, Text, StyleSheet, TouchableOpacity} from "react-n
 //import Button from "react-native-button";
 import {Actions} from "react-native-router-flux";
 import Icon from 'react-native-vector-icons/FontAwesome';
-//var Mailer = require('NativeModules').RNMail;
+var Mailer = require('NativeModules').RNMail;
 import I18n from 'react-native-i18n';
 
 const styles = StyleSheet.create({
