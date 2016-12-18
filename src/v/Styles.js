@@ -50,14 +50,18 @@ module.exports = {
         //alignItems: "center",
 	},
 	inner_place:{
+		//flex:1,
+		flexDirection:'row',
 		backgroundColor:'white',
 		height:150,
-		width:Dimensions.get('window').width,
+		//width:Dimensions.get('window').width,
 	},
 	inner_search:{
 		backgroundColor:'white',
 		height:90,
-		width:Dimensions.get('window').width-60,
+		//width:Dimensions.get('window').width-60,
+		marginLeft:2,
+		marginRight:60,
 	},
 	address:{
 		fontWeight:'bold',

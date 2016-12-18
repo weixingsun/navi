@@ -8,10 +8,17 @@ import About  from './v/About'
 import Search from './v/Search'
 import MultiLang from './lang/all'
 import {Provider} from 'react-redux'
+
+import configureStore from './lib/configureStore'
+import {setStore} from './reducers/global/globalActions'
+import GlobalInitialState from './reducers/global/globalInitialState'
+import pack from '../package'
+var VERSION = pack.version
 export default class App extends Component {
     constructor(props) {
         super(props);
         this.state={
+			global: (new GlobalInitialState())
         }
     }
     componentWillMount() {}
@@ -20,8 +27,8 @@ export default class App extends Component {
 	}
     render() {
         let drIcon=<Icon style={{marginLeft:6}} name={"bars"} color={"#2a2929"} size={30}/>
-		//title="Home" hideNavBar={false} 
-		//<Scene key="root">
+		const store = configureStore(this.state)
+		store.dispatch(setStore(store))
         return (
             <Router>
                 <Scene key="drawer" component={Drawer} open={false} type={"reset"} >

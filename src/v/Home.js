@@ -1,11 +1,12 @@
 import React from 'react';
 import {Dimensions, ListView, Platform, StyleSheet, Text, TextInput, TouchableHighlight, View, } from "react-native";
-//import Button from "react-native-button";
 import {Actions} from "react-native-router-flux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import Permissions from 'react-native-permissions';
 import styles from './Styles'
+import Google from '../api/Google'
+import PolylineUtil from '../api/Polyline'
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -22,6 +23,9 @@ export default class Home extends React.Component {
 			start:{},
 			dest:{},
 			markers:[],
+			steps:[],
+			duration:'',
+			distance:'',
         }
 		this.updateOnUI=true
     }
@@ -35,30 +39,35 @@ export default class Home extends React.Component {
 				markers:[nextProps.dest],
 				dest:nextProps.dest,
 			})
-        }
+        }else if(nextProps.clear){
+			/* this.setState({
+				dest:{},
+				markers:[],
+				steps:[],
+			}) */
+		}
     }
 	setStartAddressLatLng(latlng){
-		return {
-			lat:latlng.latitude,
-			lng:latlng.longitude,
-			address:'My Location',
-		}
+		Google.reverse_geocoding(latlng,(result)=>{
+			let results = result.results
+			let my = {
+				lat:latlng.latitude,
+				lng:latlng.longitude,
+				address: results[0].formatted_address,
+			}
+			let start = this.state.start.lat ? this.state.start : my
+			this.setState({ my,start })
+		})
 	}
 	turnOnGps(){
         this.watchID = navigator.geolocation.watchPosition((position) => {
 				//{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
 				if(this.updateOnUI){
-					let my = this.setStartAddressLatLng(position.coords)
-					let temp = this.state.start.lat ? this.state.start : my
-					alert('watchPosition my='+JSON.stringify(my)+' start='+JSON.stringify(temp))
-					this.setState({
-						my:   my,
-						start:temp,
-					})
+					this.setStartAddressLatLng(position.coords)
 				}
 			},(error) => console.log(error.message),
 			{enableHighAccuracy: false, timeout: 10000, maximumAge: 1000, distanceFilter:100},
-        );
+		);
     }
     turnOffGps(){
         if(this.watchID==null) return
@@ -86,19 +95,16 @@ export default class Home extends React.Component {
 			}
 		});
 	}
-	renderMarkers(){
-		return this.state.markers.map((marker,i)=>{
-			return <MapView.Marker
-				key={i}
-                coordinate={{latitude:marker.lat, longitude:marker.lng}}
-                //image={ placeIcon }
-                //onPress={ ()=> this.showMsgByKey(key) }
-				pinColor={'#ff0000'}
-            />
-		})
+
+	changeClearIcon(){
+		Actions.refresh({
+			key:'home',
+			renderRightButton: ()=> <Icon name={'times'} size={40} color={'#333'} onPress={()=> Actions.refresh({clear:true}) } />,
+		});
 	}
 	renderStartDest(){
 		if(this.state.dest.address){
+			//this.changeClearIcon()
 			return (
 				<View style={styles.inner_search}>
 					<View style={{flexDirection:'row'}}>
@@ -134,7 +140,6 @@ export default class Home extends React.Component {
 		<View style={{marginTop:15}}>
 			<Text style={styles.address}>{name.substr(0,this.getSecondCommaIndex(name))}</Text>
 			<Text style={styles.address}>{name.substr(this.getSecondCommaIndex(name)+1).trim()}</Text>
-			<Text>start={JSON.stringify(this.state.start)}</Text>
 		</View>
 		)
 	}
@@ -142,27 +147,84 @@ export default class Home extends React.Component {
 		if(this.state.dest.address){
 			return (
 				<View style={styles.inner_place}>
-					<View style={{flexDirection:'row',marginTop:15,}}>
-						<Icon style={{marginLeft:30}} name={'car'}  size={40} onPress={this.routeCar.bind(this)} />
-						<Icon style={{marginLeft:30}} name={'bus'}  size={40} onPress={this.routeBus.bind(this)} />
-						<Icon style={{marginLeft:35}} name={'male'} size={40} onPress={this.routeWalk.bind(this)} />
+					<View>
+						<View style={{flexDirection:'row',marginTop:15,}}>
+							<Icon style={{marginLeft:30}} name={'car'}  size={40} onPress={this.routeCar.bind(this)} />
+							<Icon style={{marginLeft:30}} name={'bus'}  size={40} onPress={this.routeBus.bind(this)} />
+							<Icon style={{marginLeft:35}} name={'male'} size={40} onPress={this.routeWalk.bind(this)} />
+						</View>
+						{this.renderAddress(this.state.dest.address)}
 					</View>
-					{this.renderAddress(this.state.dest.address)}
+					<View style={{flex:1}} />
+					<View style={{alignItems:"flex-end",marginTop:15,marginRight:30,}}>
+						<Icon name={'play'} size={40} onPress={this.startRoute.bind(this)} />
+						<Text> </Text>
+						<Text>{this.state.distance}</Text>
+						<Text>{this.state.duration}</Text>
+					</View>
 				</View>
 			)
 		}
 	}
+	startRoute(){
+		alert('start routing')
+	}
 	routeCar(){
-		alert('car from:'+JSON.stringify(this.state.start)+'\nto '+JSON.stringify(this.state.dest))
-		let url = 'https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Queens&key'
+		Google.route(this.state.start,this.state.dest,'driving',(result)=>{
+			this.renderRoute('drive',result)
+		})
 	}
 	routeBus(){
-		alert('bus from:'+JSON.stringify(this.state.start)+'\nto '+JSON.stringify(this.state.dest))
-		let url = 'https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Queens&mode=transit&key'
+		Google.route(this.state.start,this.state.dest,'transit',(result)=>{
+			this.renderRoute('bus',result)
+		})
 	}
 	routeWalk(){
-		alert('walk from:'+JSON.stringify(this.state.start)+'\nto '+JSON.stringify(this.state.dest))
-		let url = 'https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Queens&mode=walk&key'
+		Google.route(this.state.start,this.state.dest,'walking',(result)=>{
+			this.renderRoute('walk',result)
+		})
+	}
+	renderRoute(mode,routeJson){
+		if(routeJson.routes.length>0){
+			let distance = routeJson.routes[0].legs[0].distance.text
+			let duration = routeJson.routes[0].legs[0].duration.text
+			let steps    = routeJson.routes[0].legs[0].steps
+			let info = {distance,duration,steps}
+			//alert('steps='+steps.length+' steps= '+JSON.stringify(steps))
+			this.setState({
+				distance:distance,
+				duration:duration,
+				steps:steps,
+			})
+		}else{
+			//alert('error routeJson='+JSON.stringify(routeJson))
+		}
+	}
+	renderPolylines(){
+		return this.state.steps.map((step,i)=>{
+			let pls = PolylineUtil.decode(step.polyline.points);
+			//alert(JSON.stringify(pls))
+			return <MapView.Polyline
+				key={i}
+                coordinates={pls}
+				strokeWidth={5}
+				onPress={()=>alert(JSON.stringify(step))}
+                //image={ placeIcon }
+                //onPress={ ()=> this.showMsgByKey(key) }
+				pinColor={'#ff0000'}
+            />
+		})
+	}
+	renderMarkers(){
+		return this.state.markers.map((marker,i)=>{
+			return <MapView.Marker
+				key={i}
+                coordinate={{latitude:marker.lat, longitude:marker.lng}}
+                //image={ placeIcon }
+                //onPress={ ()=> this.showMsgByKey(key) }
+				pinColor={'#ff0000'}
+            />
+		})
 	}
     render(){
 		return (
@@ -176,6 +238,7 @@ export default class Home extends React.Component {
 				showsScale={true}
 			>
 			{this.renderMarkers()}
+			{this.renderPolylines()}
 			</MapView>
 			{this.renderView()}
 		</View>

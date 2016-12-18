@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 //import SQLite from 'react-native-sqlite-storage'
 import GooglePlace from '../api/GooglePlace';
 import styles from './Styles'
+import Google from '../api/Google'
 
 export default class FunctionEdit extends React.Component {
 	constructor(props) {
@@ -102,7 +103,7 @@ export default class FunctionEdit extends React.Component {
 						name = {'dest'}
 						value= { this.state.dest }
 						query={{
-							key:'AIzaSyApl-_heZUCRD6bJ5TltYPn4gcSCy1LY3A',
+							key:Google.key,
 							location:'38.984942,-76.942706', //this.state.pos.latitude+','+this.state.pos.longitude,
 							radius:5000,
 							components:{country:'US'},
