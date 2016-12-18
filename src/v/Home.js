@@ -34,19 +34,34 @@ export default class Home extends React.Component {
 		this.checkGpsPermission()
     }
     componentWillReceiveProps(nextProps) {
-        if(nextProps.dest){
+        if(nextProps.dest!==null){
 			this.setState({
 				markers:[nextProps.dest],
 				dest:nextProps.dest,
 			})
+			//console.log('componentWillReceiveProps() props='+Object.keys(nextProps))
+			this.changeClearIcon()
         }else if(nextProps.clear){
-			/* this.setState({
+			this.setState({
 				dest:{},
 				markers:[],
 				steps:[],
-			}) */
+			})
+			this.changeQueryIcon()
 		}
     }
+	changeClearIcon(){
+		Actions.refresh({
+			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'times'} size={30} color={'#333'} onPress={()=> Actions.refresh({clear:true}) } />,
+			dest: null,
+		});
+	}
+	changeQueryIcon(){
+		Actions.refresh({
+			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search() } />,
+			clear: false,
+		});
+	}
 	setStartAddressLatLng(latlng){
 		Google.reverse_geocoding(latlng,(result)=>{
 			let results = result.results
@@ -95,16 +110,8 @@ export default class Home extends React.Component {
 			}
 		});
 	}
-
-	changeClearIcon(){
-		Actions.refresh({
-			key:'home',
-			renderRightButton: ()=> <Icon name={'times'} size={40} color={'#333'} onPress={()=> Actions.refresh({clear:true}) } />,
-		});
-	}
 	renderStartDest(){
 		if(this.state.dest.address){
-			//this.changeClearIcon()
 			return (
 				<View style={styles.inner_search}>
 					<View style={{flexDirection:'row'}}>

@@ -78,4 +78,8 @@ module.exports = {
 		flex:1,
 		height:45,
 	},
+	home_right_icon:{
+		marginRight:15,
+		marginBottom:5,
+	},
 };
