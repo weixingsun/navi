@@ -36,6 +36,7 @@
 		88F6B94CA71043A695106A86 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9856EB994D844180931E51BE /* Zocial.ttf */; };
 		DF4B23A948DE43498E381693 /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30894F0B4E3940F2A43A14B9 /* libRNI18n.a */; };
 		639ECAF9C9DA46A4BB41E3CD /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 182D07F6A596428AA33FFFD6 /* libReactNativePermissions.a */; };
+		D8773DDCC84D4DE5B0E388E3 /* libRNMail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C73519B2D3824A459B93D0AD /* libRNMail.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,6 +173,8 @@
 		30894F0B4E3940F2A43A14B9 /* libRNI18n.a */ = {isa = PBXFileReference; name = "libRNI18n.a"; path = "libRNI18n.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		6FAE831E879B42158D1D7EE7 /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativePermissions.xcodeproj"; path = "../node_modules/react-native-permissions/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		182D07F6A596428AA33FFFD6 /* libReactNativePermissions.a */ = {isa = PBXFileReference; name = "libReactNativePermissions.a"; path = "libReactNativePermissions.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		7A4008EBCBE5438BB27BE531 /* RNMail.xcodeproj */ = {isa = PBXFileReference; name = "RNMail.xcodeproj"; path = "../node_modules/react-native-mail/RNMail.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		C73519B2D3824A459B93D0AD /* libRNMail.a */ = {isa = PBXFileReference; name = "libRNMail.a"; path = "libRNMail.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +205,7 @@
 				A3BD01CDD54444619A495C96 /* libRNVectorIcons.a in Frameworks */,
 				DF4B23A948DE43498E381693 /* libRNI18n.a in Frameworks */,
 				639ECAF9C9DA46A4BB41E3CD /* libReactNativePermissions.a in Frameworks */,
+				D8773DDCC84D4DE5B0E388E3 /* libRNMail.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +342,7 @@
 				17D5E277B03143D9A6B3E8D4 /* RNVectorIcons.xcodeproj */,
 				5BE6529793854BD283D8D5AF /* RNI18n.xcodeproj */,
 				6FAE831E879B42158D1D7EE7 /* ReactNativePermissions.xcodeproj */,
+				7A4008EBCBE5438BB27BE531 /* RNMail.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -700,6 +705,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Debug;
@@ -716,6 +722,7 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/navi.app/navi";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -801,6 +808,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-i18n\RNI18n",
 					"$(SRCROOT)\..\node_modules\react-native-permissions/**",
+					"$(SRCROOT)\..\node_modules\react-native-mail\RNMail",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -845,6 +853,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-i18n\RNI18n",
 					"$(SRCROOT)\..\node_modules\react-native-permissions/**",
+					"$(SRCROOT)\..\node_modules\react-native-mail\RNMail",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

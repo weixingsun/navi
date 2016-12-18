@@ -127,7 +127,6 @@ const renderOneMenu = (drawer,icon,name,func)=>{
 }
 const Menu = (props, context) => {
     const drawer = context.drawer;
-	//DoubleConfirmDialog(I18n.t("feedback"),I18n.t("confirm_feedback"),MailSender)
     return (
         <View style={styles.container}>
             <View style={styles.menu_title}>
@@ -137,7 +136,7 @@ const Menu = (props, context) => {
             {renderOneMenu(drawer,'cog','Traffic',()=>{})}
             {renderOneMenu(drawer,'globe','Satellite',()=>{})}
 			{renderOneMenu(drawer,'info-circle','About',()=>{})}
-            {renderOneMenu(drawer,'envelope','Contact Me',()=>{})}
+            {renderOneMenu(drawer,'envelope','Contact Me',()=>DoubleConfirmDialog(I18n.t("feedback"),I18n.t("confirm_feedback"),MailSender))}
         </View>
     )
 }
