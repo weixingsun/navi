@@ -1,6 +1,17 @@
 import {Dimensions, ListView, Platform, StyleSheet, Text, TextInput, TouchableHighlight, View, } from "react-native";
 module.exports = {
-
+	walking:{
+		width:5,
+		color:'red',
+	},
+	transit:{
+		width:5,
+		color:'green',
+	},
+	driving:{
+		width:5,
+		color:'blue',
+	},
 	section:{
 		//flex: 1,
 		justifyContent: 'center',

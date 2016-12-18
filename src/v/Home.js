@@ -26,6 +26,7 @@ export default class Home extends React.Component {
 			steps:[],
 			duration:'',
 			distance:'',
+			mode:'driving',
         }
 		this.updateOnUI=true
     }
@@ -40,7 +41,6 @@ export default class Home extends React.Component {
     componentWillReceiveProps(nextProps) {
         if(nextProps.dest!==null){
 			//dest = {address,lat,lng}
-			alert(JSON.stringify(nextProps.dest))
 			this.setState({
 				markers:[nextProps.dest],
 				dest:nextProps.dest,
@@ -49,6 +49,7 @@ export default class Home extends React.Component {
 			//console.log('componentWillReceiveProps() props='+Object.keys(nextProps))
 			this.changeClearIcon()
         }else if(nextProps.clear){
+			//[true,false]
 			this.setState({
 				dest:{},
 				markers:[],
@@ -155,13 +156,16 @@ export default class Home extends React.Component {
 	}
 	renderPlaceView(){
 		if(this.state.dest.address){
+			let carColor = this.getIconColor('driving',this.state.mode)
+			let busColor = this.getIconColor('transit',this.state.mode)
+			let walkColor = this.getIconColor('walking',this.state.mode)
 			return (
 				<View style={styles.inner_place}>
 					<View>
 						<View style={{flexDirection:'row',marginTop:15,}}>
-							<Icon style={{marginLeft:30}} name={'car'}  size={40} onPress={this.routeCar.bind(this)} />
-							<Icon style={{marginLeft:30}} name={'bus'}  size={40} onPress={this.routeBus.bind(this)} />
-							<Icon style={{marginLeft:35}} name={'male'} size={40} onPress={this.routeWalk.bind(this)} />
+							<Icon style={{marginLeft:30}} name={'car'}  color={carColor} size={40} onPress={this.routeCar.bind(this)} />
+							<Icon style={{marginLeft:30}} name={'bus'}  color={busColor} size={40} onPress={this.routeBus.bind(this)} />
+							<Icon style={{marginLeft:35}} name={'male'} color={walkColor} size={40} onPress={this.routeWalk.bind(this)} />
 						</View>
 						{this.renderAddress(this.state.dest.address)}
 					</View>
@@ -176,22 +180,29 @@ export default class Home extends React.Component {
 			)
 		}
 	}
+	getIconColor(name,mode){
+		if(name==mode){
+			return styles[mode].color
+		} else {
+			return 'gray'
+		}
+	}
 	startRoute(){
 		alert('start routing')
 	}
 	routeCar(){
 		Google.route(this.state.start,this.state.dest,'driving',(result)=>{
-			this.renderRoute('drive',result)
+			this.renderRoute('driving',result)
 		})
 	}
 	routeBus(){
 		Google.route(this.state.start,this.state.dest,'transit',(result)=>{
-			this.renderRoute('bus',result)
+			this.renderRoute('transit',result)
 		})
 	}
 	routeWalk(){
 		Google.route(this.state.start,this.state.dest,'walking',(result)=>{
-			this.renderRoute('walk',result)
+			this.renderRoute('walking',result)
 		})
 	}
 	renderRoute(mode,routeJson){
@@ -201,11 +212,13 @@ export default class Home extends React.Component {
 			let steps    = routeJson.routes[0].legs[0].steps
 			let ne = routeJson.routes[0].bounds.northeast
 			let sw = routeJson.routes[0].bounds.southwest
+			let latDelta = Math.abs(ne.lat - sw.lat)
+			let lngDelta = Math.abs(ne.lng - sw.lng)
 			let region = {
 				latitude: (ne.lat+sw.lat)/2,
 				longitude: (ne.lng+sw.lng)/2,
-				latitudeDelta: Math.abs(ne.lat - sw.lat)+0.05,
-				longitudeDelta: Math.abs(ne.lng - sw.lng)+0.05,
+				latitudeDelta: latDelta*1.4,
+				longitudeDelta:lngDelta*1.4,
 			}
 			//alert('steps='+steps.length+' steps= '+JSON.stringify(steps))
 			this.setState({ distance,duration,steps,mode,region })
@@ -220,11 +233,9 @@ export default class Home extends React.Component {
 			return <MapView.Polyline
 				key={i}
                 coordinates={pls}
-				strokeWidth={5}
+				strokeWidth={styles[this.state.mode].width}
+				strokeColor={styles[this.state.mode].color}
 				onPress={()=>alert(JSON.stringify(step))}
-                //image={ placeIcon }
-                //onPress={ ()=> this.showMsgByKey(key) }
-				pinColor={'#ff0000'}
             />
 		})
 	}

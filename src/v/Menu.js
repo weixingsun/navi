@@ -80,7 +80,7 @@ const showFilePicker = ()=>{
 }
 const MailSender = ()=>{
     Mailer.mail({
-        subject: 'Query about Xrows app',
+        subject: 'Query about this Navi app',
         recipients: ['sun.app.service@gmail.com'],
         //ccRecipients: ['supportCC@example.com'],
         //bccRecipients: ['supportBCC@example.com'],
@@ -127,17 +127,17 @@ const renderOneMenu = (drawer,icon,name,func)=>{
 }
 const Menu = (props, context) => {
     const drawer = context.drawer;
-			//{renderOneMenu(drawer,'mouse-pointer','Graphic Editor',Actions.edit)}
+	//DoubleConfirmDialog(I18n.t("feedback"),I18n.t("confirm_feedback"),MailSender)
     return (
         <View style={styles.container}>
             <View style={styles.menu_title}>
-                <Text style={styles.menu_name}>Menu</Text>
+                <Text style={styles.menu_name}>Settings</Text>
             </View>
-            {renderOneMenu(drawer,'folder','Open an Excel',showFilePicker)}
-            {renderOneMenu(drawer,'cog','Function Editor',Actions.edit)}
-            {renderOneMenu(drawer,'info-circle','About',Actions.about)}
-            {renderOneMenu(drawer,'book','User Manual',Actions.book)}
-            {renderOneMenu(drawer,'envelope','Contact Me',()=>DoubleConfirmDialog(I18n.t("feedback"),I18n.t("confirm_feedback"),MailSender))}
+            {renderOneMenu(drawer,'star','My Places',()=>{})}
+            {renderOneMenu(drawer,'cog','Traffic',()=>{})}
+            {renderOneMenu(drawer,'globe','Satellite',()=>{})}
+			{renderOneMenu(drawer,'info-circle','About',()=>{})}
+            {renderOneMenu(drawer,'envelope','Contact Me',()=>{})}
         </View>
     )
 }
