@@ -36,7 +36,20 @@ describe('testing home page', () => {
         let props =null
         snapshotHome(props)
     });
-    it('home page: dest', () => {
+	//
+	it('home page: location denied', () => {
+        let props =null
+        snapshotHome(props)
+    });
+	it('home page: mock gps for get init start', () => {
+        let props = {
+            start:'',
+            dest: '',
+            mode: 'driving',
+        }
+        snapshotHome(props)
+    });
+    it('home page: set dest', () => {
         let props = {
             place: 'College Park',
             lat:38.984942,
@@ -45,12 +58,21 @@ describe('testing home page', () => {
         }
         snapshotHome(props)
     });
-    it('home page: start', () => {
+    it('home page: set start', () => {
         let props = {
             place: 'College Park',
             lat:38.984942,
             lng:-76.942706,
             type:'Start',
+        }
+        snapshotHome(props)
+    });
+	it('home page: set dest long address', () => {
+        let props = {
+            place: 'white house white house white house white house ',
+            lat:38.984942,
+            lng:-76.942706,
+            type:'Destination',
         }
         snapshotHome(props)
     });
@@ -84,5 +106,12 @@ describe('testing home page', () => {
         }
         snapshotHome(props)
     });
+	it('home page: route fail', () => {
+        let props = {
+            start:'',
+            dest: '',
+            mode: 'driving',
+        }
+        snapshotHome(props)
+    });
 });
-
