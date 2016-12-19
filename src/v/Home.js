@@ -59,15 +59,15 @@ export default class Home extends React.Component {
                 })
             }
         }
-        if(nextProps.clear){
+        if(nextProps.clear==='all'){
             //[true,false]
+            this.changeQueryIcon()
             this.setState({
                 dest:{},
                 markers:[],
                 steps:[],
                 mode:'',
             })
-            this.changeQueryIcon()
         }
         if(nextProps.route){
             let r = nextProps.route   // {start,dest,mode}  // {driving,transit,walking}
@@ -78,14 +78,19 @@ export default class Home extends React.Component {
     }
     changeClearIcon(){
         Actions.refresh({
-            renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'times'} size={30} color={'#333'} onPress={()=> Actions.refresh({clear:true}) } />,
+            renderRightButton: ()=> <Icon 
+                style={styles.home_right_icon} 
+                name={'times'} 
+                size={30} 
+                color={'#333'} 
+                onPress={()=> Actions.refresh({clear:'all',route:null}) } />,
             place: null,
         });
     }
 	changeQueryIcon(){
 		Actions.refresh({
 			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search({place_type:'Destination'}) } />,
-			clear: false,
+			clear: 'restart',
 		});
 	}
 	setStartAddressLatLng(latlng){
@@ -264,14 +269,14 @@ export default class Home extends React.Component {
 				latitudeDelta: latDelta*1.4,
 				longitudeDelta:lngDelta*1.4,
 			}
-			//alert('steps='+steps.length+' steps= '+JSON.stringify(steps))
 			this.setState({ distance,duration,steps,mode,region })
 		}else{
 			alert('route failed: '+routeJson.error_message)
 		}
 	}
 	renderPolylines(){
-		return this.state.steps.map((step,i)=>{
+                //alert('steps='+this.state.steps.length)
+		let polylines = this.state.steps.map((step,i)=>{
 			let pls = PolylineUtil.decode(step.polyline.points);
 			//alert(JSON.stringify(pls))
 			return <MapView.Polyline
@@ -279,9 +284,13 @@ export default class Home extends React.Component {
                                 coordinates={pls}
 				strokeWidth={styles[this.state.mode].width}
 				strokeColor={styles[this.state.mode].color}
+				lineCap={'round'}
+				lineJoin={'round'}
 				//onPress={()=>alert(JSON.stringify(step))}
-            />
+                               />
 		})
+                //alert('steps='+polylines)
+                return polylines
 	}
 	renderMarkers(){
 		return this.state.markers.map((marker,i)=>{

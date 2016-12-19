@@ -8,6 +8,14 @@ import About  from './v/About'
 import Search from './v/Search'
 import MultiLang from './lang/all'
 import styles from './v/Styles'
+//
+import dva, { connect } from 'dva/mobile';
+function delay(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
+
 
 export default class App extends Component {
     constructor(props) {
