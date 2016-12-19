@@ -14,29 +14,29 @@ export default class Home extends React.Component {
         this.ds= new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state={ 
             region:{
-			latitude: 38.984942,
-			longitude: -76.942706,
-			latitudeDelta: 0.1,
-			longitudeDelta: 0.1,
-	    },
-		my:{},
-		start:{},
-		dest:{},
-		markers:[],
-		steps:[],
-		duration:'',
-		distance:'',
-		mode:'',
+                latitude: 38.984942,
+                longitude: -76.942706,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1,
+            },
+            my:{},
+            start:{},
+            dest:{},
+            markers:[],
+            steps:[],
+            duration:'',
+            distance:'',
+            mode:'',
         }
-		this.updateOnUI=true
+        this.updateOnUI=true
     }
-	componentWillUnmount() { 
-		this.turnOffGps();
-		this.updateOnUI=false
+    componentWillUnmount() { 
+        this.turnOffGps();
+        this.updateOnUI=false
     }
     componentWillMount() {
         //this.addRunIcon()
-	this.checkGpsPermission()
+        this.checkGpsPermission()
     }
     componentWillReceiveProps(nextProps) {
         this.processNewProps(nextProps)
@@ -69,14 +69,19 @@ export default class Home extends React.Component {
             })
             this.changeQueryIcon()
         }
-        alert(nextProps.clear)
+        if(nextProps.route){
+            let r = nextProps.route   // {start,dest,mode}  // {driving,transit,walking}
+            Google.route(r.start,r.dest,r.mode,(result)=>{
+                this.renderRoute(r.mode,result)
+            })
+        }
     }
-	changeClearIcon(){
-		Actions.refresh({
-			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'times'} size={30} color={'#333'} onPress={()=> Actions.refresh({clear:true}) } />,
-			place: null,
-		});
-	}
+    changeClearIcon(){
+        Actions.refresh({
+            renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'times'} size={30} color={'#333'} onPress={()=> Actions.refresh({clear:true}) } />,
+            place: null,
+        });
+    }
 	changeQueryIcon(){
 		Actions.refresh({
 			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search({place_type:'Destination'}) } />,
@@ -217,19 +222,32 @@ export default class Home extends React.Component {
 		alert('start routing')
 	}
 	routeCar(){
-		Google.route(this.state.start,this.state.dest,'driving',(result)=>{
-			this.renderRoute('driving',result)
-		})
+                // {start,dest,mode}  // {driving,transit,walking}
+		Actions.refresh({
+                    route: {
+                        start:this.state.start,
+                        dest: this.state.dest,
+                        mode: 'driving',
+		    }
+                })
 	}
 	routeBus(){
-		Google.route(this.state.start,this.state.dest,'transit',(result)=>{
-			this.renderRoute('transit',result)
-		})
+                Actions.refresh({
+                    route: {
+                        start:this.state.start,
+                        dest: this.state.dest,
+                        mode: 'transit',
+                    }
+                })
 	}
 	routeWalk(){
-		Google.route(this.state.start,this.state.dest,'walking',(result)=>{
-			this.renderRoute('walking',result)
-		})
+                Actions.refresh({
+                    route: {
+                        start:this.state.start,
+                        dest: this.state.dest,
+                        mode: 'walking',
+                    }
+                })
 	}
 	renderRoute(mode,routeJson){
 		if(routeJson.routes.length>0){

@@ -23,29 +23,66 @@ import React from 'react'
 import Home from '../src/v/Home';
 import renderer from 'react-test-renderer';
 
-describe('renders correctly', () => {
+function snapshotHome (props) {
+    const tree = renderer.create(<Home {...props} />).toJSON()
+    expect(tree).toMatchSnapshot()
+}
+
+describe('testing home page', () => {
   beforeEach(()=>{
-    //Home.componentWillMount = emptyFunc
+    //
   });
-    it('on visible=true', () => {
-        const latlng = {
-            latitude: 52.5166667,
-            longitude: 13.4,
-        };
-        const color = '#ace';
-
-        const component = (
-            <Home />
-        );
-
-        const tree = renderer.create(component).toJSON();
-
-        expect(tree).toMatchSnapshot();
+    it('home page: launch', () => {
+        let props =null
+        snapshotHome(props)
+    });
+    it('home page: dest', () => {
+        let props = {
+            place: 'College Park',
+            lat:38.984942,
+            lng:-76.942706,
+            type:'Destination',
+        }
+        snapshotHome(props)
+    });
+    it('home page: start', () => {
+        let props = {
+            place: 'College Park',
+            lat:38.984942,
+            lng:-76.942706,
+            type:'Start',
+        }
+        snapshotHome(props)
+    });
+    it('home page: clear', () => {
+        let props = {
+            clear: true,
+        }
+        snapshotHome(props)
+    });
+    it('home page: route car', () => {
+        let props = {
+            start:'',
+            dest: '',
+            mode: 'driving',
+        }
+        snapshotHome(props)
+    });
+    it('home page: route bus', () => {
+        let props = {
+            start:'',
+            dest: '',
+            mode: 'transit',
+        }
+        snapshotHome(props)
+    });
+    it('home page: route walk', () => {
+        let props = {
+            start:'',
+            dest: '',
+            mode: 'walking',
+        }
+        snapshotHome(props)
     });
 });
 
-/*it('renders home page correctly', () => {
-  const tree = renderer.create(
-    <Home />
-  );
-})*/
