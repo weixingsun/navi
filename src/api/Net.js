@@ -6,7 +6,8 @@ module.exports = {
         return responseJson;
       } catch(err) {
         //console.error(err);
-        alert('Network Problem err='+JSON.stringify(err))
+        //alert('Network Problem err='+JSON.stringify(err))
+        alert('Network Problem')
       }
     },
     _get(url) {

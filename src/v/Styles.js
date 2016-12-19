@@ -1,5 +1,49 @@
 import {Dimensions, ListView, Platform, StyleSheet, Text, TextInput, TouchableHighlight, View, } from "react-native";
 module.exports = {
+  
+  menu_container: {
+    flex: 1,
+    //justifyContent: "center",
+    //alignItems: "flex-start",
+    backgroundColor: "#2a2929",
+        //padding:20,
+    //borderWidth: 2,
+    //borderColor: 'gray',
+  },
+  menu_title: {
+    flexDirection:'row',
+    justifyContent: "center",
+    //alignItems: "flex-start",
+    backgroundColor: "#2a2929",
+        //padding:20,
+        ...Platform.select({
+      ios: {
+        height: 64,
+      },
+      android: {
+        height: 54,
+      },
+    }),
+  },
+  menu0: {
+    justifyContent: "center",
+    //alignItems: "flex-start",
+    backgroundColor: "#494949",
+    height:48,
+    paddingLeft:6,
+    marginTop:1,
+  },
+  menu_name: {
+    marginLeft:10,
+    fontSize:14,
+    color:'white',
+  },
+  menu_link:{
+    marginLeft:10,
+    flexDirection:'row',
+    justifyContent:'center',
+  },
+///////////////////////////////////////////////////////
 	walking:{
 		width:5,
 		color:'red',
@@ -28,6 +72,9 @@ module.exports = {
 		fontWeight:'bold',
 		fontSize:20,
 	},
+        small_title_name:{
+                fontSize:12,
+        },
 	
     container: {
         flex: 1,
@@ -62,7 +109,7 @@ module.exports = {
 	},
 	inner_place:{
 		//flex:1,
-		//flexDirection:'row',
+		flexDirection:'row',
 		backgroundColor:'white',
 		height:150,
                 position: 'absolute',
@@ -79,27 +126,37 @@ module.exports = {
 		//marginLeft:2,
 		//marginRight:60,
                 position: 'absolute',
-                top: 55,
+                ...Platform.select({
+                  ios: {
+                    top: 64,
+                  },
+                  android: {
+                    top: 54,
+                  },
+                }),
                 left: 2,
                 right: 60,
 	},
-	address:{
-		fontWeight:'bold',
-		fontSize:16,
+	home_place_address:{
+		//fontWeight:'bold',
+		fontSize:14,
 		marginTop:5,
-		marginLeft:30,
+		marginLeft:5,
 	},
 	search_icon:{
-		marginLeft:15,
+		marginLeft:10,
 		marginTop:10,
-		marginRight:10,
+		marginRight:5,
 	},
 	search_input:{
 		flex:1,
 		height:45,
+                fontSize:12,
+                padding:4,
 	},
 	home_right_icon:{
-		marginRight:15,
-		marginBottom:5,
+                //position: 'relative',
+		marginTop:-5,
+		marginRight:10,
 	},
 };

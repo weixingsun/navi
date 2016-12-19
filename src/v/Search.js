@@ -9,20 +9,37 @@ import styles from './Styles'
 import Google from '../api/Google'
 
 export default class FunctionEdit extends React.Component {
-	constructor(props) {
+    constructor(props) {
         super(props);
         this.state={
-			lines:[],
-			dest:'',
-			destLat:0,
-			destLng:0,
+		lines:[],
+		dest:'',
+		destLat:0,
+		destLng:0,
+                place_type:'Destination',
         }
-		this.ds= new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+	this.ds= new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     }
-	componentWillMount(){
+    componentWillMount(){
 		//this.getHistoryDB('search_history',(v)=>alert(JSON.stringify(v)))
 		//AsyncStorage.removeItem('search_history')
 		//this.setState({ lines:JSON.parse(value) });
+        //alert(this.props.place_type)
+        if(this.props.place_type!=null){
+            //alert(this.props.place_type)
+            this.setState({
+                place_type:this.props.place_type,
+            })
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        //alert('type='+nextProps.place_type)
+        if(nextProps.place_type!=null){
+            alert(nextProps.place_type)
+            this.setState({
+                place_type:nextProps.place_type,
+            })
+        }
     }
 	getHistoryDB(name,func){
 		AsyncStorage.getItem(name).then((value)=>{
@@ -61,86 +78,89 @@ export default class FunctionEdit extends React.Component {
 		);
 	}
 	setDestination(json){
-		this.setState({
-			dest:json.address,
-			destLat:json.lat,
-			destLng:json.lng,
-		});
-		this.appendHistoryDB(json);
+		/*this.setState({
+			address:json.address,
+			lat:json.lat,
+			lng:json.lng,
+		});*/
+		//this.appendHistoryDB(json);
 		//alert('data='+JSON.stringify(json))
 		//this.updateActionIcon(json)
-		Actions.pop({refresh:{dest: json}})
+		Actions.pop({refresh:{place:json}})
 	}
 	updateActionIcon(json){
 		if(json.address){
 			Actions.refresh({
 				key:'search',
-				renderRightButton: ()=> <Icon name={'play'} size={20} color={'#333'} onPress={()=> Actions.pop({refresh:{dest: json}})}/>
+				renderRightButton: ()=> <Icon name={'play'} size={20} color={'#333'} onPress={()=> Actions.pop({refresh:{place:json}})}/>
 			})
 		}
 	}
     render(){
         return (
             <View style={styles.map}>
-				<View style={styles.section}>
-					<View style={styles.title}>
-						<Text style={styles.title_name}>Destination</Text>
-					</View>
-					<GooglePlace
-						placeholder='powered by Google'  //required by Google
-						minLength={1} // minimum length of text to search
-						autoFocus={false}
-						fetchDetails={true}		//for getting latlng
-						onPress={(data, details = {}) => { // details is provided when fetchDetails = true
-							let dest_latlng = {
-								address: data.description,
-								lat:details.geometry.location.lat,
-								lng:details.geometry.location.lng,
-								//type:details.types,
-							}
-							this.setDestination(dest_latlng)
-						}}
-						name = {'dest'}
-						value= { this.state.dest }
-						query={{
-							key:Google.key,
-							location:'38.984942,-76.942706', //this.state.pos.latitude+','+this.state.pos.longitude,
-							radius:5000,
-							components:{country:'US'},
-						}}
-						styles={{
-						  description: {
-							//fontWeight: 'bold',
-							fontSize:12,
-						  },
-						  predefinedPlacesDescription: {
-							color: '#1faadb',
-						  },
-						}}
-						currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-						//currentLocationLabel="Current location"
-						//currentLocationAPI='GoogleReverseGeocoding' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-						//GoogleReverseGeocodingQuery={{
-						  // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-						//}}
-						//GooglePlacesSearchQuery={{
-						  // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-						  // rankby: 'distance',
-						  //types: 'food',
-						//}}
-						//filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-						// predefinedPlaces={[everywhere]}
-						//{...this.props} // @todo test sans (need for 'name')
-					  />
-					<View style={styles.section}>
-						<ListView style={styles.listContainer}
-							dataSource={this.ds.cloneWithRows(this.state.lines)}
-							renderRow={this._renderRowView.bind(this)}
-							enableEmptySections={true}
-						/>
-					</View>
-				</View>
+		<View style={styles.section}>
+			<View style={styles.title}>
+				<Text style={styles.small_title_name}>{this.state.place_type}</Text>
+			</View>
+			<GooglePlace
+				placeholder='powered by Google'  //required by Google
+				minLength={1} // minimum length of text to search
+				autoFocus={true}
+				fetchDetails={true}		//for getting latlng
+				onPress={(data, details = {}) => { // details is provided when fetchDetails = true
+					let dest_latlng = {
+                                                type:this.state.place_type,
+						address: data.description,
+						lat:details.geometry.location.lat,
+						lng:details.geometry.location.lng,
+						//type:details.types,
+					}
+					this.setDestination(dest_latlng)
+				}}
+				name = {'dest'}
+				value= { this.state.dest }
+				query={{
+					key:Google.key,
+					location:'38.984942,-76.942706', //this.state.pos.latitude+','+this.state.pos.longitude,
+					radius:5000,
+					components:{country:'US'},
+				}}
+				styles={{
+				  description: {
+					//fontWeight: 'bold',
+					fontSize:12,
+				  },
+				  predefinedPlacesDescription: {
+					color: '#1faadb',
+				  },
+				}}
+				currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+				//currentLocationLabel="Current location"
+				//currentLocationAPI='GoogleReverseGeocoding' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+				//GoogleReverseGeocodingQuery={{
+				// available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+				//}}
+				//GooglePlacesSearchQuery={{
+				  // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+				  // rankby: 'distance',
+				  //types: 'food',
+				//}}
+				//filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+				// predefinedPlaces={[everywhere]}
+				//{...this.props} // @todo test sans (need for 'name')
+			  />
+		</View>
             </View>
         );
+/*
+                        <View style={styles.section}>
+                                <ListView style={styles.listContainer}
+                                        dataSource={this.ds.cloneWithRows(this.state.lines)}
+                                        renderRow={this._renderRowView.bind(this)}
+                                        enableEmptySections={true}
+                                />
+                        </View>
+*/
     }
 }

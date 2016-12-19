@@ -14,19 +14,19 @@ export default class Home extends React.Component {
         this.ds= new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state={ 
             region:{
-				latitude: 38.984942,
-				longitude: -76.942706,
-				latitudeDelta: 0.1,
-				longitudeDelta: 0.1,
-			},
-			my:{},
-			start:{},
-			dest:{},
-			markers:[],
-			steps:[],
-			duration:'',
-			distance:'',
-			mode:'',
+			latitude: 38.984942,
+			longitude: -76.942706,
+			latitudeDelta: 0.1,
+			longitudeDelta: 0.1,
+	    },
+		my:{},
+		start:{},
+		dest:{},
+		markers:[],
+		steps:[],
+		duration:'',
+		distance:'',
+		mode:'',
         }
 		this.updateOnUI=true
     }
@@ -39,39 +39,53 @@ export default class Home extends React.Component {
 		this.checkGpsPermission()
     }
     componentWillReceiveProps(nextProps) {
-        if(nextProps.dest!==null){
-			//dest = {address,lat,lng}
-			this.setState({
-				markers:[nextProps.dest],
-				dest:nextProps.dest,
-				region:{...this.state.region,latitude:nextProps.dest.lat,longitude:nextProps.dest.lng},
-			})
-			//console.log('componentWillReceiveProps() props='+Object.keys(nextProps))
-			this.changeClearIcon()
-        }else if(nextProps.clear){
-			//[true,false]
-			this.setState({
-				dest:{},
-				markers:[],
-				steps:[],
-			})
-			this.changeQueryIcon()
-		}
+        this.processNewProps(nextProps)
+    }
+    processNewProps(nextProps){
+        if(nextProps.place!==null){
+            //place = {address,lat,lng,type}  type = ['Destination','Start']
+            if(nextProps.place.type==='Destination'){
+                this.setState({
+                    markers:[nextProps.place],
+                    dest:nextProps.place,
+                    region:{...this.state.region,latitude:nextProps.place.lat,longitude:nextProps.place.lng},
+                })
+                this.changeClearIcon()
+            }else if(nextProps.place.type==='Start'){
+                this.setState({
+                    //markers:[nextProps.dest],
+                    start:nextProps.place,
+                    //region:{...this.state.region,latitude:nextProps.place.lat,longitude:nextProps.place.lng},
+                })
+            }
+        }
+        if(nextProps.clear){
+            //[true,false]
+            this.setState({
+                dest:{},
+                markers:[],
+                steps:[],
+                mode:'',
+            })
+            this.changeQueryIcon()
+        }
+        alert(nextProps.clear)
     }
 	changeClearIcon(){
 		Actions.refresh({
 			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'times'} size={30} color={'#333'} onPress={()=> Actions.refresh({clear:true}) } />,
-			dest: null,
+			place: null,
 		});
 	}
 	changeQueryIcon(){
 		Actions.refresh({
-			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search() } />,
+			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search({place_type:'Destination'}) } />,
 			clear: false,
 		});
 	}
 	setStartAddressLatLng(latlng){
 		Google.reverse_geocoding(latlng,(result)=>{
+                    if(result){
 			let results = result.results
 			let my = {
 				lat:latlng.latitude,
@@ -80,16 +94,17 @@ export default class Home extends React.Component {
 			}
 			let start = this.state.start.lat ? this.state.start : my
 			this.setState({ my,start })
+                    }
 		})
 	}
 	turnOnGps(){
         this.watchID = navigator.geolocation.watchPosition((position) => {
-				//{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
-				if(this.updateOnUI){
-					this.setStartAddressLatLng(position.coords)
-				}
-			},(error) => console.log(error.message),
-			{enableHighAccuracy: false, timeout: 10000, maximumAge: 1000, distanceFilter:100},
+		//{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
+		if(this.updateOnUI){
+			this.setStartAddressLatLng(position.coords)
+		}
+		},(error) => console.log(error.message),
+			{enableHighAccuracy: false, timeout: 10000, maximumAge: 5000, distanceFilter:100},
 		);
     }
     turnOffGps(){
@@ -120,11 +135,12 @@ export default class Home extends React.Component {
 				<View style={styles.inner_search}>
 					<View style={{flexDirection:'row'}}>
 						<Icon style={styles.search_icon} name={'circle-o'} size={20} onPress={()=>alert('start')} />
-						<TextInput style={styles.search_input} onChangeText={(text) => this.setState({text})} value={this.state.start.address} />
+						<TextInput style={styles.search_input} onChangeText={(text) => this.setState({text})} value={this.state.start.address} onFocus={()=>Actions.search({place_type:'Start'})} />
 					</View>
+                                        <View style={styles.separator}/>
 					<View style={{flexDirection:'row'}}>
 						<Icon style={styles.search_icon} name={'flag-o'} size={20} onPress={()=>alert('dest')} />
-						<TextInput style={styles.search_input} onChangeText={(text) => this.setState({text})} value={this.state.dest.address} />
+						<TextInput style={styles.search_input} onChangeText={(text) => this.setState({text})} value={this.state.dest.address} onFocus={Actions.search} />
 					</View>
 				</View>
 			)
@@ -132,7 +148,6 @@ export default class Home extends React.Component {
 	}
 	renderView(){
 		if(this.state.dest.address){
-			//<View style={styles.place}>
 			return (
 			<View style={styles.place}>
 				{this.renderStartDest()}
@@ -141,18 +156,29 @@ export default class Home extends React.Component {
 			)
 		}
 	}
-	getSecondCommaIndex(name){
+	getMiddleIndex(name){
 		let arr = name.split(',')
-		return arr[0].length+arr[1].length+1
+                let half = arr.length/2
+                arr = arr.slice(0, half);
+		return arr.join(',').length
 	}
 	renderAddress(name){
+                let firsthalf = name.substr(0,this.getMiddleIndex(name)).trim()
+                let secondhalf = name.substr(this.getMiddleIndex(name)+1).trim()
 		if(name.length<30) return <Text style={styles.address}>{name}</Text>
-		else return (
-		<View style={{marginTop:15}}>
-			<Text style={styles.address}>{name.substr(0,this.getSecondCommaIndex(name))}</Text>
-			<Text style={styles.address}>{name.substr(this.getSecondCommaIndex(name)+1).trim()}</Text>
-		</View>
-		)
+                else if(firsthalf.length<30) return (
+                    <View style={{marginTop:15}}>
+                        <Text style={styles.home_place_address}>{firsthalf}</Text>
+                        <Text style={styles.home_place_address}>{secondhalf}</Text>
+                    </View>)
+		else{
+                    return (
+                        <View style={{marginTop:15}}>
+			    <Text style={styles.home_place_address}>{firsthalf.substr(0,this.getMiddleIndex(firsthalf))}</Text>
+  			    <Text style={styles.home_place_address}>{firsthalf.substr(this.getMiddleIndex(firsthalf)+1).trim()}</Text>
+			    <Text style={styles.home_place_address}>{secondhalf}</Text>
+  		        </View>)
+                }
 	}
 	renderPlaceView(){
 		if(this.state.dest.address){
@@ -163,9 +189,9 @@ export default class Home extends React.Component {
 				<View style={styles.inner_place}>
 					<View>
 						<View style={{flexDirection:'row',marginTop:15,}}>
-							<Icon style={{marginLeft:30}} name={'car'}  color={carColor} size={40} onPress={this.routeCar.bind(this)} />
+							<Icon style={{marginLeft:10}} name={'car'}  color={carColor} size={40} onPress={this.routeCar.bind(this)} />
 							<Icon style={{marginLeft:30}} name={'bus'}  color={busColor} size={40} onPress={this.routeBus.bind(this)} />
-							<Icon style={{marginLeft:35}} name={'male'} color={walkColor} size={40} onPress={this.routeWalk.bind(this)} />
+							<Icon style={{marginLeft:32}} name={'male'} color={walkColor} size={40} onPress={this.routeWalk.bind(this)} />
 						</View>
 						{this.renderAddress(this.state.dest.address)}
 					</View>
@@ -232,10 +258,10 @@ export default class Home extends React.Component {
 			//alert(JSON.stringify(pls))
 			return <MapView.Polyline
 				key={i}
-                coordinates={pls}
+                                coordinates={pls}
 				strokeWidth={styles[this.state.mode].width}
 				strokeColor={styles[this.state.mode].color}
-				onPress={()=>alert(JSON.stringify(step))}
+				//onPress={()=>alert(JSON.stringify(step))}
             />
 		})
 	}

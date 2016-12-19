@@ -2,53 +2,13 @@ import React from 'react';
 import {Alert, Platform, View, Text, StyleSheet, TouchableOpacity} from "react-native";
 //import Button from "react-native-button";
 import {Actions} from "react-native-router-flux";
-import Icon from 'react-native-vector-icons/FontAwesome';
-var Mailer = require('NativeModules').RNMail;
+import FIcon from 'react-native-vector-icons/FontAwesome';
+import MIcon from 'react-native-vector-icons/MaterialIcons';
+//import Icon from './Icon'
 import I18n from 'react-native-i18n';
+import styles from './Styles'
+var Mailer = require('NativeModules').RNMail;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //justifyContent: "center",
-    //alignItems: "flex-start",
-    backgroundColor: "#2a2929",
-	//padding:20,
-    //borderWidth: 2,
-    //borderColor: 'gray',
-  },
-  menu_title: {
-    justifyContent: "center",
-    //alignItems: "flex-start",
-    backgroundColor: "#2a2929",
-	//padding:20,
-	...Platform.select({
-      ios: {
-        height: 64,
-      },
-      android: {
-        height: 54,
-      },
-    }),
-  },
-  menu0: {
-    justifyContent: "center",
-    //alignItems: "flex-start",
-    backgroundColor: "#494949",
-    height:48,
-    paddingLeft:6,
-    marginTop:1,
-  },
-  menu_name: {
-    marginLeft:10,
-    fontSize:14,
-    color:'white',
-  },
-  menu_link:{
-    marginLeft:10,
-    flexDirection:'row',
-    justifyContent:'center',
-  },
-});
 const contextTypes = {
     drawer: React.PropTypes.object,
 };
@@ -110,11 +70,11 @@ const DoubleConfirmDialog = (title,content,func)=>{
 		]
 	);
 }
-const renderOneMenu = (drawer,icon,name,func)=>{
+const renderOneMenu = (drawer,Icon,icon,name,func)=>{
     return(
         <TouchableOpacity
             style={styles.menu0}
-            onPress={() => { drawer.close(); if(typeof func==='function'){ func() }else{alert(JSON.stringify(Actions))} } }>
+            onPress={() => { drawer.close(); if(typeof func==='function'){ func() }} }>
             <View style={styles.menu_link}>
                 <View style={{width:24,justifyContent:"center",}}>
                     <Icon name={icon} size={20} color={'white'} />
@@ -128,15 +88,23 @@ const renderOneMenu = (drawer,icon,name,func)=>{
 const Menu = (props, context) => {
     const drawer = context.drawer;
     return (
-        <View style={styles.container}>
+        <View style={styles.menu_container}>
             <View style={styles.menu_title}>
-                <Text style={styles.menu_name}>Settings</Text>
+                <View style={{width:44,justifyContent:"center",marginLeft:20}}>
+                    <FIcon name={'cog'} size={30} color={'white'} />
+                </View>
+                <View style={{justifyContent:"center",}}>
+                    <Text style={styles.menu_name}>Settings</Text>
+                </View>
+                <View style={{flex:1}}/>
             </View>
-            {renderOneMenu(drawer,'star','My Places',()=>{})}
-            {renderOneMenu(drawer,'cog','Traffic',()=>{})}
-            {renderOneMenu(drawer,'globe','Satellite',()=>{})}
-			{renderOneMenu(drawer,'info-circle','About',()=>{})}
-            {renderOneMenu(drawer,'envelope','Contact Me',()=>DoubleConfirmDialog(I18n.t("feedback"),I18n.t("confirm_feedback"),MailSender))}
+            {renderOneMenu(drawer,FIcon,'star','My Places',()=>{})}
+            {renderOneMenu(drawer,MIcon,'traffic','Traffic',()=>{})}
+            {renderOneMenu(drawer,FIcon,'globe','Satellite',()=>{})}
+            {renderOneMenu(drawer,FIcon,'balance-scale','Units',()=>{})}
+            {renderOneMenu(drawer,FIcon,'language','Language',()=>{})}
+            {renderOneMenu(drawer,FIcon,'info-circle','About',()=>{})}
+            {renderOneMenu(drawer,FIcon,'envelope','Contact Me',()=>DoubleConfirmDialog(I18n.t("feedback"),I18n.t("confirm_feedback"),MailSender))}
         </View>
     )
 }
