@@ -91,13 +91,15 @@ export default class Home extends React.Component {
                 name={'times'} 
                 size={30} 
                 color={'#333'}
-                onPress={()=> Actions.refresh({clear:'all',route:null}) } />,
+                onPress={()=> Actions.refresh({clear:'all',route:null}) }
+				accessible={true} accessibilityLabel={'ClearIcon'} 
+				/>,
             place: null,
         });
     }
 	changeQueryIcon(){
 		Actions.refresh({
-			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search() } />,
+			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search() } accessible={true} accessibilityLabel={'SearchIcon'}  />,
 			clear: 'restart',
 		});
 	}
@@ -207,9 +209,9 @@ export default class Home extends React.Component {
 				<View style={styles.inner_place}>
 					<View>
 						<View style={{flexDirection:'row',marginTop:15,}}>
-							<Icon style={{marginLeft:10}} name={'car'}  color={carColor} size={40} onPress={this.routeCar.bind(this)} />
-							<Icon style={{marginLeft:30}} name={'bus'}  color={busColor} size={40} onPress={this.routeBus.bind(this)} />
-							<Icon style={{marginLeft:32}} name={'male'} color={walkColor} size={40} onPress={this.routeWalk.bind(this)} />
+							<Icon style={{marginLeft:10}} name={'car'}  color={carColor} size={40} onPress={this.routeCar.bind(this)} accessible={true} accessibilityLabel={'DrivingIcon'} />
+							<Icon style={{marginLeft:30}} name={'bus'}  color={busColor} size={40} onPress={this.routeBus.bind(this)} accessible={true} accessibilityLabel={'TransitIcon'} />
+							<Icon style={{marginLeft:32}} name={'male'} color={walkColor} size={40} onPress={this.routeWalk.bind(this)} accessible={true} accessibilityLabel={'WalkingIcon'} />
 						</View>
 						{this.renderAddress(this.state.dest.address)}
 					</View>

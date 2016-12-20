@@ -481,7 +481,7 @@ const GooglePlacesAutocomplete = React.createClass({
     return null;
   },
 
-  _renderRow(rowData = {}) {
+  _renderRow(rowData = {},sectionID, rowID) {
     rowData.description = rowData.description || rowData.formatted_address || rowData.name;
     
     return (
@@ -490,6 +490,8 @@ const GooglePlacesAutocomplete = React.createClass({
           this._onPress(rowData)
         }
         underlayColor="#c8c7cc"
+		accessible={true} 
+		accessibilityLabel={'suggetlist_item'+rowID} 
       >
         <View>
           <View style={[defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
@@ -560,6 +562,7 @@ const GooglePlacesAutocomplete = React.createClass({
           <TextInput
             { ...userProps }
             ref="textInput"
+			accessible={true} accessibilityLabel={'SearchInput'}
             autoFocus={this.props.autoFocus}
             style={[defaultStyles.textInput, this.props.styles.textInput]}
             onChangeText={onChangeText ? text => {this._onChangeText(text); onChangeText(text)} : this._onChangeText}

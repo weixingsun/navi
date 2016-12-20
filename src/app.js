@@ -26,7 +26,7 @@ export default class App extends Component {
     }
     componentWillMount() {}
 	renderQueryIcon(){
-		return <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search() } />
+		return <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search() } accessible={true} accessibilityLabel={'SearchIcon'} />
 	}
     render() {
         let drIcon=<Icon style={{marginLeft:6}} name={"bars"} color={"#2a2929"} size={30}/>

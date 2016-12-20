@@ -156,7 +156,14 @@ module.exports = {
 	},
 	home_right_icon:{
                 //position: 'relative',
-		marginTop:-5,
+                ...Platform.select({
+                  ios: {
+                    marginTop:-5,
+                  },
+                  android: {
+                    marginTop:0,
+                  },
+                }),
 		marginRight:10,
 	},
 };
