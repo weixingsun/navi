@@ -1,4 +1,4 @@
-//use it as an independant module
+//imported from react-native-gifted-form
 
 import React from 'react'
 import {TextInput, View, ListView, Image, Text, Dimensions, TouchableHighlight, TouchableWithoutFeedback, Platform, ActivityIndicator, PixelRatio} from 'react-native'

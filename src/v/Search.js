@@ -14,9 +14,9 @@ import {
 } from "react-native-router-flux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 //import SQLite from 'react-native-sqlite-storage'
-import GooglePlace from '../api/GooglePlace';
+import GooglePlace from '../c/api/GooglePlace';
 import styles from './Styles'
-import Google from '../api/Google'
+import Google from '../c/api/Google'
 /**
  * Search page
  * Using Google Suggestion API, abstracted in GooglePlace
@@ -54,8 +54,9 @@ export default class Search extends React.Component {
             })
         }
         // update title
+		let title_suffix = this.props.place_type?this.props.place_type:this.state.place_type
         Actions.refresh({
-            title: title_pre + this.state.place_type,
+            title: title_pre + title_suffix,
         });
     }
     componentWillReceiveProps(nextProps) {

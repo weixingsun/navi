@@ -5,8 +5,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import Permissions from 'react-native-permissions';
 import styles from './Styles'
-import Google from '../api/Google'
-import PolylineUtil from '../api/Polyline'
+import Google from '../c/api/Google'
+import PolylineUtil from '../c/api/Polyline'
 /**
  * Home page
  * Project: navi
@@ -101,6 +101,8 @@ export default class Home extends React.Component {
                 this.setState({
                     //markers:[props.dest],
                     start:props.place,
+                    steps:[],
+                    mode:'',
                     //region:{...this.state.region,latitude:props.place.lat,longitude:props.place.lng},
                 })
             }
@@ -150,7 +152,7 @@ export default class Home extends React.Component {
         });
     }
     /**
-     * For updating UI, translate gps latlng to readable current place name
+     * For updating UI, translate gps latlng to readable current place name, exec only once
 	 * Use google reverse geocoding API
      * @param {JSON} latlng, position data from GPS
      */
@@ -163,7 +165,7 @@ export default class Home extends React.Component {
                 lng:latlng.longitude,
                 address: results[0].formatted_address,
             }
-            let start = this.state.start.lat ? this.state.start : my
+            let start = my
             this.setState({ my,start })
           }
         })
@@ -173,10 +175,11 @@ export default class Home extends React.Component {
      */
     turnOnGps(){
         this.watchID = navigator.geolocation.watchPosition((position) => {
-        //{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
-        if(this.updateOnUI){
-            this.setStartAddressLatLng(position.coords)
-        }
+            //{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
+            if(this.updateOnUI){
+                this.setStartAddressLatLng(position.coords)
+            }
+            this.turnOffGps()
         },(error) => console.log(error.message),
             {enableHighAccuracy: false, timeout: 10000, maximumAge: 5000, distanceFilter:100},
         );
@@ -249,21 +252,20 @@ export default class Home extends React.Component {
      * @param {String} name of address
      */
     renderAddress(name){
-                let firsthalf = name.substr(0,this.getMiddleIndex(name)).trim()
-                let secondhalf = name.substr(this.getMiddleIndex(name)+1).trim()
+        let firsthalf = name.substr(0,this.getMiddleIndex(name)).trim()
+        let secondhalf = name.substr(this.getMiddleIndex(name)+1).trim()
         if(name.length<30) return <Text style={styles.address}>{name}</Text>
-                else if(firsthalf.length<30) return (
-                    <View style={{marginTop:15}}>
-                        <Text style={styles.home_place_address}>{firsthalf}</Text>
-                        <Text style={styles.home_place_address}>{secondhalf}</Text>
-                    </View>)
-        else{
-            return (
-                <View style={{marginTop:15}}>
+        else if(firsthalf.length<30) return (
+            <View style={{marginTop:15}}>
+                <Text style={styles.home_place_address}>{firsthalf}</Text>
+                <Text style={styles.home_place_address}>{secondhalf}</Text>
+            </View>)
+        else{return (
+            <View style={{marginTop:15}}>
                 <Text style={styles.home_place_address}>{firsthalf.substr(0,this.getMiddleIndex(firsthalf))}</Text>
                   <Text style={styles.home_place_address}>{firsthalf.substr(this.getMiddleIndex(firsthalf)+1).trim()}</Text>
                 <Text style={styles.home_place_address}>{secondhalf}</Text>
-                </View>)
+            </View>)
         }
     }
     /**
@@ -320,7 +322,6 @@ export default class Home extends React.Component {
      * @param {null} but using internal state
      */
     routeCar(){
-        // {start,dest,mode}  // 
         Actions.refresh({
             route: {
                 start:this.state.start,
@@ -361,6 +362,7 @@ export default class Home extends React.Component {
      * @param {JSON} routeJson, result from google direction api
      */
     renderRoute(mode,routeJson){
+		//check if route success
         if(routeJson.routes.length>0){
             let distance = routeJson.routes[0].legs[0].distance.text
             let duration = routeJson.routes[0].legs[0].duration.text

@@ -1,3 +1,11 @@
+/**
+ * setup jest config here, mocking linking,permission,router,maps, etc.
+ * Project: navi
+ * Package: com.navi
+ * Author: Weixing Sun on 2016-12-19 10:20
+ * Email:  Weixing.Sun@Gmail.Com
+ */
+
 jest.mock('Linking', () => {
   return {
     addEventListener: jest.fn(),

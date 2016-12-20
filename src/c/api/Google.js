@@ -16,16 +16,55 @@ module.exports = {
 	 * @param {Function} func, callback function to actions/pages
 	 */
 	route(start,dest,mode,func){
-		if(start.address && dest.address){
-			//let startStr=start.lat+','+start.lng
-			//let destStr=dest.lat+','+dest.lng
+		if(mode==='transit'){
+	        this.routeByName(start,dest,mode,func)
+		}else{
+			this.routeByLatLng(start,dest,mode,func)
+		}
+	},
+	/**
+	 * route by latlng api
+	 * @param {JSON} start, {address,lat,lng,type}
+	 * @param {JSON} dest, {address,lat,lng,type}
+	 * @param {String} mode, [driving,transit,walking]
+	 * @param {Function} func, callback function to actions/pages
+	 */
+	routeByLatLng(start,dest,mode,func){
+		if(start.lat && start.lng && dest.lat && dest.lng){
 			let url = 'https://maps.googleapis.com/maps/api/directions/json'
-			+'?origin='+start.address
-			+'&destination='+dest.address
+			//+'?origin='+start.address
+			//+'&destination='+dest.address
+			+'?origin='+start.lat+','+start.lng
+			+'&destination='+dest.lat+','+dest.lng
 			+'&mode='+mode
 			+'&key='+this.key
 			+'&units=metric'  //imperial
 			//+'&alternatives=true'
+			//console.log('url='+url)
+			Net._get(url).then((rst)=>{
+				func(rst)
+			})
+		}
+    },
+	/**
+	 * route by name api
+	 * @param {JSON} start, {address,lat,lng,type}
+	 * @param {JSON} dest, {address,lat,lng,type}
+	 * @param {String} mode, [driving,transit,walking]
+	 * @param {Function} func, callback function to actions/pages
+	 */
+	routeByName(start,dest,mode,func){
+		if(start.address && dest.address){
+			let url = 'https://maps.googleapis.com/maps/api/directions/json'
+			+'?origin='+start.address
+			+'&destination='+dest.address
+			//+'?origin='+start.lat+','+start.lng
+			//+'&destination='+dest.lat+','+dest.lng
+			+'&mode='+mode
+			+'&key='+this.key
+			+'&units=metric'  //imperial
+			//+'&alternatives=true'
+			//console.log('url='+url)
 			Net._get(url).then((rst)=>{
 				func(rst)
 			})
