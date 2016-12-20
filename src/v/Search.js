@@ -8,7 +8,7 @@ import GooglePlace from '../api/GooglePlace';
 import styles from './Styles'
 import Google from '../api/Google'
 
-export default class FunctionEdit extends React.Component {
+export default class Search extends React.Component {
     constructor(props) {
         super(props);
         this.state={
@@ -34,12 +34,12 @@ export default class FunctionEdit extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         //alert('type='+nextProps.place_type)
-        if(nextProps.place_type!=null){
+        /*if(nextProps.place_type!=null){
             alert(nextProps.place_type)
             this.setState({
                 place_type:nextProps.place_type,
             })
-        }
+        }*/
     }
 	getHistoryDB(name,func){
 		AsyncStorage.getItem(name).then((value)=>{

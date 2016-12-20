@@ -35,32 +35,18 @@ export default class Home extends React.Component {
         this.updateOnUI=false
     }
     componentWillMount() {
-        //this.addRunIcon()
         this.checkGpsPermission()
     }
     componentWillReceiveProps(nextProps) {
         this.processNewProps(nextProps)
     }
     processNewProps(nextProps){
-        if(nextProps.place!==null){
-            //place = {address,lat,lng,type}  type = ['Destination','Start']
-            if(nextProps.place.type==='Destination'){
-                this.setState({
-                    markers:[nextProps.place],
-                    dest:nextProps.place,
-                    region:{...this.state.region,latitude:nextProps.place.lat,longitude:nextProps.place.lng},
-                })
-                this.changeClearIcon()
-            }else if(nextProps.place.type==='Start'){
-                this.setState({
-                    //markers:[nextProps.dest],
-                    start:nextProps.place,
-                    //region:{...this.state.region,latitude:nextProps.place.lat,longitude:nextProps.place.lng},
-                })
-            }
-        }
-        if(nextProps.clear==='all'){
-            //[true,false]
+		this.checkClearAction(nextProps)
+		this.checkPlaceAction(nextProps)
+		this.checkRouteAction(nextProps)
+    }
+	checkClearAction(props){
+		if(props.clear==='all'){
             this.changeQueryIcon()
             this.setState({
                 dest:{},
@@ -69,27 +55,48 @@ export default class Home extends React.Component {
                 mode:'',
             })
         }
-        if(nextProps.route){
-            let r = nextProps.route   // {start,dest,mode}  // {driving,transit,walking}
+	}
+	checkPlaceAction(props){
+		if(props.place!==null){
+            //place = {address,lat,lng,type}  type = ['Destination','Start']
+            if(props.place.type==='Destination'){
+                this.setState({
+                    markers:[props.place],
+                    dest:props.place,
+                    region:{...this.state.region,latitude:props.place.lat,longitude:props.place.lng},
+                })
+                this.changeClearIcon()
+            }else if(props.place.type==='Start'){
+                this.setState({
+                    //markers:[props.dest],
+                    start:props.place,
+                    //region:{...this.state.region,latitude:props.place.lat,longitude:props.place.lng},
+                })
+            }
+        }
+	}
+	checkRouteAction(props){
+		if(props.route){
+            let r = props.route   // {start,dest,mode}  // mode=[driving,transit,walking]
             Google.route(r.start,r.dest,r.mode,(result)=>{
                 this.renderRoute(r.mode,result)
             })
         }
-    }
+	}
     changeClearIcon(){
         Actions.refresh({
             renderRightButton: ()=> <Icon 
                 style={styles.home_right_icon} 
                 name={'times'} 
                 size={30} 
-                color={'#333'} 
+                color={'#333'}
                 onPress={()=> Actions.refresh({clear:'all',route:null}) } />,
             place: null,
         });
     }
 	changeQueryIcon(){
 		Actions.refresh({
-			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search({place_type:'Destination'}) } />,
+			renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search() } />,
 			clear: 'restart',
 		});
 	}

@@ -12,8 +12,8 @@ module.exports = {
 			+'&key='+this.key
 			+'&units=metric'  //imperial
 			//+'&alternatives=true'
+			//console.log('GoogleDirection='+url)
 			Net._get(url).then((rst)=>{
-				console.log('GoogleDirection='+url)
 				func(rst)
 			})
 		}
@@ -23,7 +23,9 @@ module.exports = {
 			let url = 'https://maps.googleapis.com/maps/api/geocode/json'
 			+'?latlng='+latlng.latitude+','+latlng.longitude
 			+'&key='+this.key
+			//console.log('reverse_geocoding='+url)
 			Net._get(url).then((rst)=>{
+				//console.log('reverse_geocoding='+rst.results[0].formatted_address)
 				func(rst)
 			})
 		}

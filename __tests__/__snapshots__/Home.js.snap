@@ -1,0 +1,587 @@
+exports[`testing home page:  clear 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  launch 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  location denied 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  markers render check 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  mock gps for get init start 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  place view render check 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  route bus 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  route car 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  route fail 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  route render check 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  route walk 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  set dest 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  set dest long address 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
+
+exports[`testing home page:  set start 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+    }
+  }>
+  <MapView
+    initialRegion={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    region={
+      Object {
+        "latitude": 38.984942,
+        "latitudeDelta": 0.1,
+        "longitude": -76.942706,
+        "longitudeDelta": 0.1,
+      }
+    }
+    rotateEnabled={false}
+    showsCompass={true}
+    showsScale={true}
+    showsUserLocation={true}
+    style={
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 54,
+      }
+    } />
+</View>
+`;
