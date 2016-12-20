@@ -1,43 +1,23 @@
 import React from 'react';
 import {Alert, Platform, View, Text, StyleSheet, TouchableOpacity} from "react-native";
-//import Button from "react-native-button";
 import {Actions} from "react-native-router-flux";
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
-//import Icon from './Icon'
 import I18n from 'react-native-i18n';
 import styles from './Styles'
 var Mailer = require('NativeModules').RNMail;
-
+//import Button from "react-native-button";
+/**
+ * Side menu in drawer
+ * Project: navi
+ * Package: com.navi
+ * Author: Weixing Sun on 2016-12-19 10:18
+ * Email:  Weixing.Sun@Gmail.Com
+ */
 const contextTypes = {
     drawer: React.PropTypes.object,
 };
-const showFilePicker = ()=>{
-	DocumentPicker.show({
-		//filetype: ['public.data'],
-	},(result) => { 
-		//{type:'text/comma-separated-values',fileName:'test.csv',fileSize:2499,uri:'content://...'}
-		//console.log('Menu page get file:'+JSON.stringify(result))
-		if(result.type==='text/comma-separated-values' //csv
-		|| result.type==='application/vnd.ms-excel'    //xls
-		|| result.type==='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'  //xlsx
-		){
-			//alert('excel='+result.type)
-			Actions.refresh({
-				key:'home',
-				file:result.path,
-			});
-		}else if(result.err){
-			alert('err='+result.err)
-		//}else if(result.type==='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){  //xlsx
-		//	alert('Excel 2010 not supported, Please use csv format')
-		//}else if(result.type==='application/vnd.ms-excel'){  //xls
-		//	alert('Excel 2007 not supported, Please use csv format')
-		}else{
-			alert('Not supported type: '+result.type)
-		}
-	});
-}
+
 const MailSender = ()=>{
     Mailer.mail({
         subject: 'Query about this Navi app',

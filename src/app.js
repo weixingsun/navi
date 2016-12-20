@@ -8,15 +8,13 @@ import About  from './v/About'
 import Search from './v/Search'
 import MultiLang from './lang/all'
 import styles from './v/Styles'
-/*
-import dva, { connect } from 'dva/mobile';
-function delay(timeout) {
-  return new Promise(resolve => {
-    setTimeout(resolve, timeout);
-  });
-}
-*/
-
+/**
+ * app entry point, define global router/scenes here
+ * Project: navi
+ * Package: com.navi
+ * Author: Weixing Sun on 2016-12-19 10:18
+ * Email:  Weixing.Sun@Gmail.Com
+ */
 export default class App extends Component {
     constructor(props) {
         super(props);

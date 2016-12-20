@@ -1,4 +1,18 @@
+/**
+ * Includes all Network API calls here, alternative modules like RxJS, RNfetch, etc.
+ * Project: navi
+ * Package: com.navi
+ * Author: Weixing Sun on 2016-12-19 10:20
+ * Email:  Weixing.Sun@Gmail.Com
+ */
+
 module.exports = {
+	/**
+	 * Network REST api
+	 * @param {String} url
+	 * @param {JSON} data
+	 * @return {JSON} response, in promise
+	 */
     async netCmd(url, data) {
       try {
         let response = await fetch(url, data);
@@ -10,12 +24,28 @@ module.exports = {
         alert('Network Problem')
       }
     },
+	/**
+	 * Network REST.get api
+	 * @param {String} url
+	 * @return {JSON} response, in promise
+	 */
     _get(url) {
       return this.netCmd(url,{method:'get'});
     },
+	/**
+	 * Network REST.delete api by url
+	 * @param {String} url
+	 * @return {JSON} response, in promise
+	 */
     _del(url) {
       return this.netCmd(url,{method:'delete'});
     },
+	/**
+	 * Network REST.delete api by form
+	 * @param {String} url
+	 * @param {JSON} data
+	 * @return {JSON} response, in promise
+	 */
     _del_body(url,data) {
       return this.netCmd(url,{
             method:'delete',
@@ -23,6 +53,12 @@ module.exports = {
             body: JSON.stringify(data)
         });
     },
+	/**
+	 * Network REST.put api by form
+	 * @param {String} url
+	 * @param {JSON} data
+	 * @return {JSON} response, in promise
+	 */
     _put(url,data) {
         return this.netCmd(url,{
             method:'put',
@@ -30,6 +66,12 @@ module.exports = {
             body: JSON.stringify(data)
         });
     },
+	/**
+	 * Network REST.post api by form
+	 * @param {String} url
+	 * @param {JSON} data
+	 * @return {JSON} response, in promise
+	 */
     _post(url, data) {
       return this.netCmd(url,{
           method:'post',

@@ -3,6 +3,13 @@ import Drawer from 'react-native-drawer';
 import Menu from './Menu';
 import {Actions, DefaultRenderer} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+/**
+ * Drawer
+ * Project: navi
+ * Package: com.navi
+ * Author: Weixing Sun on 2016-12-19 10:18
+ * Email:  Weixing.Sun@Gmail.Com
+ */
 export default class extends React.Component {
     render(){
         const state = this.props.navigationState;
