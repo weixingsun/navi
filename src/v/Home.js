@@ -12,7 +12,8 @@ export default class Home extends React.Component {
     constructor(props) {
         super(props);
         this.ds= new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.state={ 
+        this.state={
+			//use UMD as initial place
             region:{
                 latitude: 38.984942,
                 longitude: -76.942706,

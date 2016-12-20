@@ -24,12 +24,19 @@ export default class Search extends React.Component {
 		//this.getHistoryDB('search_history',(v)=>alert(JSON.stringify(v)))
 		//AsyncStorage.removeItem('search_history')
 		//this.setState({ lines:JSON.parse(value) });
-        //alert(this.props.place_type)
+        let title_pre = 'Select a ' //will support i18n later
         if(this.props.place_type!=null){
             //alert(this.props.place_type)
             this.setState({
                 place_type:this.props.place_type,
             })
+            Actions.refresh({
+                title: title_pre+this.props.place_type,
+            });
+        }else{
+            Actions.refresh({
+                title: title_pre+this.state.place_type,
+            });
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -100,9 +107,6 @@ export default class Search extends React.Component {
         return (
             <View style={styles.map}>
 		<View style={styles.section}>
-			<View style={styles.title}>
-				<Text style={styles.small_title_name}>{this.state.place_type}</Text>
-			</View>
 			<GooglePlace
 				placeholder='powered by Google'  //required by Google
 				minLength={1} // minimum length of text to search
@@ -154,6 +158,9 @@ export default class Search extends React.Component {
             </View>
         );
 /*
+                        <View style={styles.title}>
+                                <Text style={styles.small_title_name}>{this.state.place_type}</Text>
+                        </View>
                         <View style={styles.section}>
                                 <ListView style={styles.listContainer}
                                         dataSource={this.ds.cloneWithRows(this.state.lines)}
