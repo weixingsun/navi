@@ -17,6 +17,15 @@ jest.mock('react-native-permissions',()=>{
   }
   return permissions
 })
+jest.mock('react-native-router-flux',()=>{
+  //const rnrf = require.requireActual('react-native-router-flux')
+  return { Actions:{
+    push: function() {},
+    reset: function() {},
+    pop: function() {},
+    refresh: function() {},
+  }}
+})
 jest.mock('react-native-maps', () => {
   const React = require('React')
   return class MockMapView extends React.Component {
