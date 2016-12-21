@@ -17,7 +17,6 @@ import {
     View,
 } from "react-native";
 module.exports = {
-
     menu_container: {
         flex: 1,
         //justifyContent: "center",
@@ -137,6 +136,7 @@ module.exports = {
         //width:Dimensions.get('window').width,
     },
     inner_search: {
+        flexDirection: 'row',
         backgroundColor: 'white',
         height: 90,
         //width:Dimensions.get('window').width-60,
@@ -168,9 +168,16 @@ module.exports = {
     search_input: {
         flex: 1,
         height: 45,
-        fontSize: 12,
+        //fontSize: 12,
         padding: 4,
+		backgroundColor: '#f9f5ed',
     },
+	place_switch:{
+        justifyContent: "center",
+        alignItems: "center",
+		width:50,
+		backgroundColor:'#f9f5ed',
+	},
     home_right_icon: {
         //position: 'relative',
         ...Platform.select({

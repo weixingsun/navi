@@ -7,6 +7,7 @@ import Permissions from 'react-native-permissions';
 import styles from './Styles'
 import Google from '../c/api/Google'
 import PolylineUtil from '../c/api/Polyline'
+import { Kohana } from 'react-native-textinput-effects';
 /**
  * Home page
  * Project: navi
@@ -198,6 +199,18 @@ export default class Home extends React.Component {
           }
         })
     }
+	switchStartDest(){
+		let start = this.state.dest
+		start.type='Start'
+		let dest = this.state.start
+		dest.type='Destination'
+		let markers = [start,dest]
+		this.setState({
+			start,
+			dest,
+			markers,
+		})
+	}
     /**
      * GPS switch on
      */
@@ -248,18 +261,21 @@ export default class Home extends React.Component {
      * @param {null} but using internal state.start & state.dest
      */
     renderStartDest(){
+		//<TextInput style={styles.search_input} value={this.state.start.address} onFocus={()=>Actions.search({place_type:'Start'})} />
+		//<TextInput style={styles.search_input} value={this.state.dest.address} onFocus={Actions.search} />
         if(this.state.dest.address){
             return (
                 <View style={styles.inner_search}>
-                    <View style={{flexDirection:'row'}}>
-                        <Icon style={styles.search_icon} name={'circle-o'} size={20} onPress={()=>{}} />
-                        <TextInput style={styles.search_input} onChangeText={(text) => this.setState({text})} value={this.state.start.address} onFocus={()=>Actions.search({place_type:'Start'})} />
-                    </View>
+                    <View style={{flex:1}}>
+				    <Kohana style={styles.search_input} label={'Start'} iconClass={Icon} iconName={'circle-o'} iconColor={'#f4d29a'} 
+					  labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={()=>Actions.search({place_type:'Start'})} value={this.state.start.address} />
                     <View style={styles.separator}/>
-                    <View style={{flexDirection:'row'}}>
-                        <Icon style={styles.search_icon} name={'flag-o'} size={20} onPress={()=>{}} />
-                        <TextInput style={styles.search_input} onChangeText={(text) => this.setState({text})} value={this.state.dest.address} onFocus={Actions.search} />
+				    <Kohana style={styles.search_input} label={'Destination'} iconClass={Icon} iconName={'flag-o'} iconColor={'#f4d29a'} 
+					  labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={Actions.search} value={this.state.dest.address} />
                     </View>
+					<View style={styles.place_switch}>
+					    <Icon name={'retweet'} size={30} onPress={this.switchStartDest.bind(this)}/>
+					</View>
                 </View>
             )
         }
@@ -454,7 +470,7 @@ export default class Home extends React.Component {
         <View style={styles.container}>
             <MapView ref={ref => { this.map = ref; }} 
 			    style={styles.map}
-                region={this.state.region}
+                //region={this.state.region}
                 initialRegion={this.state.region}
                 showsUserLocation={true}
                 rotateEnabled={false}
