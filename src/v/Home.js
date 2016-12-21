@@ -406,7 +406,7 @@ export default class Home extends React.Component {
                 style={styles.map}
                 //region={this.state.region}
                 initialRegion={this.state.region}
-                showsUserLocation={true}
+                //showsUserLocation={true}  //sometimes it confused user when gps data differ from google own location
                 rotateEnabled={false}
                 showsCompass={true}
                 showsScale={true}
