@@ -86,12 +86,15 @@ export default class Home extends React.Component {
     checkClearAction(props){
         if(props.clear==='all'){
             this.changeQueryIcon()
+            let start = {...this.state.my,type:'Start'}
             this.setState({
+                start:start,
                 dest:{},
-                markers:[this.state.start],
+                markers:[start],
                 steps:[],
                 mode:'',
             })
+            //this.animateTo(this.state.my)
         }
     }
     /**
@@ -220,7 +223,7 @@ export default class Home extends React.Component {
                 //region:myregion,
                 markers:[start],
             })
-            this.animateTo(my)
+            setTimeout(() =>  this.animateTo(my), 600)
         }else{
             //alert('setMyPosition '+JSON.stringify(json))
         }
