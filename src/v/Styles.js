@@ -127,7 +127,7 @@ module.exports = {
         //flex:1,
         flexDirection: 'row',
         backgroundColor: 'white',
-        height: 100,
+        height: 105,
         position: 'absolute',
         //top: 550,
         left: 0,
@@ -180,14 +180,14 @@ module.exports = {
     },
     home_right_icon: {
         //position: 'relative',
-        ...Platform.select({
+        /* ...Platform.select({
             ios: {
                 marginTop: -5,
             },
             android: {
                 marginTop: 0,
             },
-        }),
+        }), */
         marginRight: 10,
     },
 };

@@ -149,7 +149,7 @@ export default class Home extends React.Component {
                 name={'times'} 
                 size={30} 
                 color={'#333'}
-                onPress={()=> Actions.refresh({clear:'all',route:null}) }
+                onPress={()=> Actions.refresh({clear:'all',route_result:null}) }
                 accessible={true} accessibilityLabel={'ClearIcon'} 
                 />,
             place: null, //this is only ui change, not to circular bother action entry
