@@ -39,7 +39,7 @@ export default class Home extends React.Component {
             mode:'',
         }
         this.updateOnUI=true
-		this.turnOnGps=this.turnOnGps.bind(this)
+        this.turnOnGps=this.turnOnGps.bind(this)
     }
     /**
      * Cleaning GPS and UI update switch
@@ -53,7 +53,7 @@ export default class Home extends React.Component {
      */
     componentWillMount() {
         this.checkGpsPermission()
-		this.changeQueryIcon()
+        this.changeQueryIcon()
     }
     /**
      * Actions Entry
@@ -104,7 +104,7 @@ export default class Home extends React.Component {
                     region:{...this.state.region,latitude:props.place.lat,longitude:props.place.lng},
                 })
                 this.changeClearIcon()
-				setTimeout(() =>  this.focusMap(['Start','Destination'], true), 500)
+                setTimeout(() =>  this.focusMap(['Start','Destination'], true), 500)
             }else if(props.place.type==='Start'){
                 this.setState({
                     markers:[this.state.dest,props.place],
@@ -113,7 +113,7 @@ export default class Home extends React.Component {
                     mode:'',
                     //region:{...this.state.region,latitude:props.place.lat,longitude:props.place.lng},
                 })
-				setTimeout(() =>  this.focusMap(['Start','Destination'], true), 500)
+                setTimeout(() =>  this.focusMap(['Start','Destination'], true), 500)
             }
         }
     }
@@ -127,7 +127,7 @@ export default class Home extends React.Component {
      */
     checkRouteAction(props){
         if(props.route){
-		    let r = props.route   // {start,dest,mode}  // mode=[driving,transit,walking]
+            let r = props.route   // {start,dest,mode}  // mode=[driving,transit,walking]
             Google.route(r.start,r.dest,r.mode,(result)=>{
                 this.renderRoute(r.mode,result)
             })
@@ -164,20 +164,20 @@ export default class Home extends React.Component {
      * Actions: focus current map to fit all markers
      * @param {null}
      */
-	focusMap(markerIds, animated) {
-		//console.log(`Markers received to populate map: ${markers}`);
-		this.map.fitToSuppliedMarkers(markerIds, animated);
-	}
+    focusMap(markerIds, animated) {
+        //console.log(`Markers received to populate map: ${markers}`);
+        this.map.fitToSuppliedMarkers(markerIds, animated);
+    }
     /**
      * Actions: focus current map to a place
      * @param {JSON} latlng
      */
-	animateTo(latlng) {
-		this.map.animateToRegion({...this.state.region,latitude:latlng.lat,longitude:latlng.lng});
-	}
+    animateTo(latlng) {
+        this.map.animateToRegion({...this.state.region,latitude:latlng.lat,longitude:latlng.lng});
+    }
     /**
      * For init start marker, translate latlng to readable current place name, exec only once
-	 * Use google reverse geocoding API
+     * Use google reverse geocoding API
      * @param {JSON} latlng, position data from GPS
      */
     setAddressByLatLng(latlng){
@@ -189,17 +189,17 @@ export default class Home extends React.Component {
      * For init start marker, translate net latlng to readable current place name, exec only once
      * @param {JSON} latlng, position data from GPS
      */
-	getLatLngNet(){
-		Net.getNetLatLng((latlng)=>{
-			this.setAddressByLatLng(latlng)
-		})
-	}
+    getLatLngNet(){
+        Net.getNetLatLng((latlng)=>{
+            this.setAddressByLatLng(latlng)
+        })
+    }
     /**
      * Set my position, , exec only once
      * @param {JSON} latlng, coordinates from Gps/Net
      */
     setMyPosition(latlng,json){
-		if(json.results){
+        if(json.results){
             let my = {
                 lat:latlng.latitude,
                 lng:latlng.longitude,
@@ -209,53 +209,53 @@ export default class Home extends React.Component {
                 lat:latlng.latitude,
                 lng:latlng.longitude,
                 address: json.results[0].formatted_address,
-				type:'Start',
+                type:'Start',
             }
-			let myregion = {
+            let myregion = {
                 latitude:latlng.latitude,
                 longitude:latlng.longitude,
                 latitudeDelta: 0.1,
                 longitudeDelta: 0.1,
-			}
+            }
             this.setState({ 
-				my:my,
-				start:start,
-				//region:myregion,
-				markers:[start],
-			})
-			this.animateTo(my)
+                my:my,
+                start:start,
+                //region:myregion,
+                markers:[start],
+            })
+            this.animateTo(my)
         }
-	}
-	switchStartDest(){
-		let start = this.state.dest
-		start.type='Start'
-		let dest = this.state.start
-		dest.type='Destination'
-		let markers = [start,dest]
-		this.setState({
-			start,
-			dest,
-			markers,
-			steps:[],
-			mode:'',
-		})
-	}
+    }
+    switchStartDest(){
+        let start = this.state.dest
+        start.type='Start'
+        let dest = this.state.start
+        dest.type='Destination'
+        let markers = [start,dest]
+        this.setState({
+            start,
+            dest,
+            markers,
+            steps:[],
+            mode:'',
+        })
+    }
     /**
      * Gps settings check on launch
      * @param {null}
      */
-	enableGps(){
-		LocationServiceDialogBox.checkLocationServicesIsEnabled({
-			message:'<h2>Location service disabled</h2>This app want to use your location',
-			ok:'Yes',
-			cancel:'No',
-		}).then((success)=>{
-			this.turnOnGps()
-		}).catch((reject)=>{
-			//alert('reject')
-			this.getLatLngNet()
-		})
-	}
+    enableGps(){
+        LocationServiceDialogBox.checkLocationServicesIsEnabled({
+            message:'<h2>Location service disabled</h2>This app want to use your location',
+            ok:'Yes',
+            cancel:'No',
+        }).then((success)=>{
+            this.turnOnGps()
+        }).catch((reject)=>{
+            //alert('reject')
+            this.getLatLngNet()
+        })
+    }
     /**
      * GPS switch on
      */
@@ -267,9 +267,9 @@ export default class Home extends React.Component {
             }
             this.turnOffGps()
         },(error) => {  //{code,message}
-			if(error.code===1) this.enableGps()
-			//else alert(JSON.stringify(error))
-		},{enableHighAccuracy: false, timeout: 10000, maximumAge: 5000, distanceFilter:200},
+            if(error.code===1) this.enableGps()
+            //else alert(JSON.stringify(error))
+        },{enableHighAccuracy: false, timeout: 10000, maximumAge: 5000, distanceFilter:200},
         );
     }
     /**
@@ -281,24 +281,24 @@ export default class Home extends React.Component {
     }
     /**
      * Permission checker, works for both android/ios
-	 * refer to: react-native-permissions
+     * refer to: react-native-permissions
      */
     checkGpsPermission(){
-		let self=this
+        let self=this
         Permissions.getPermissionStatus('location').then(response => {
             //['authorized', 'denied', 'restricted', 'undetermined']
             if(response!=='authorized'){
-				self.askGpsPermission()
-				self.getLatLngNet()
+                self.askGpsPermission()
+                self.getLatLngNet()
             }else{
-				//alert('checkGpsPermission.turnOnGps')
-				self.turnOnGps()
-			}
+                //alert('checkGpsPermission.turnOnGps')
+                self.turnOnGps()
+            }
         }).catch(error=>alert('Check GPS permission failed'));
     }
     /**
      * Request GPS permission, works for both android/ios
-	 * refer to: react-native-permissions
+     * refer to: react-native-permissions
      */
     askGpsPermission(){
         Permissions.requestPermission('location').then(response => {
@@ -318,15 +318,15 @@ export default class Home extends React.Component {
             return (
                 <View style={styles.inner_search}>
                     <View style={{flex:1}}>
-				    <Kohana style={styles.search_input} label={'Start'} iconClass={Icon} iconName={'circle-o'} iconColor={'#f4d29a'} 
-					  labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={()=>Actions.search({place_type:'Start',my:this.state.my})} value={this.state.start.address} />
+                    <Kohana style={styles.search_input} label={'Start'} iconClass={Icon} iconName={'circle-o'} iconColor={'#f4d29a'} 
+                      labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={()=>Actions.search({place_type:'Start',my:this.state.my})} value={this.state.start.address} />
                     <View style={styles.separator}/>
-				    <Kohana style={styles.search_input} label={'Destination'} iconClass={Icon} iconName={'flag-o'} iconColor={'#f4d29a'} 
-					  labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={()=>Actions.search({place_type:'Destination',my:this.state.my})} value={this.state.dest.address} />
+                    <Kohana style={styles.search_input} label={'Destination'} iconClass={Icon} iconName={'flag-o'} iconColor={'#f4d29a'} 
+                      labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={()=>Actions.search({place_type:'Destination',my:this.state.my})} value={this.state.dest.address} />
                     </View>
-					<View style={styles.place_switch}>
-					    <Icon name={'retweet'} size={30} onPress={this.switchStartDest.bind(this)}/>
-					</View>
+                    <View style={styles.place_switch}>
+                        <Icon name={'retweet'} size={30} onPress={this.switchStartDest.bind(this)}/>
+                    </View>
                 </View>
             )
         }
@@ -334,7 +334,7 @@ export default class Home extends React.Component {
     /**
      * Tools: for spliting address name into several lines, will extract to tools class later
      * @param {String} address name
-	 * @return {Number} the "," index in middle of address
+     * @return {Number} the "," index in middle of address
      */
     getMiddleIndex(name){
         let arr = name.split(',')
@@ -456,7 +456,7 @@ export default class Home extends React.Component {
      * @param {JSON} routeJson, result from google direction api
      */
     renderRoute(mode,routeJson){
-		//check if route success
+        //check if route success
         if(routeJson.routes.length>0){
             let distance = routeJson.routes[0].legs[0].distance.text
             let duration = routeJson.routes[0].legs[0].duration.text
@@ -501,14 +501,14 @@ export default class Home extends React.Component {
      */
     renderMarkers(){
         return this.state.markers.map((marker,i)=>{
-			let color = '#ff0000'
-			if(marker.type==='Start') color = '#0000ff'
+            let color = '#ff0000'
+            if(marker.type==='Start') color = '#0000ff'
             return <MapView.Marker
                 key={i}
                 coordinate={{latitude:marker.lat, longitude:marker.lng}}
                 //image={ placeIcon }
                 onPress={ ()=> console.log('clicked '+marker.type) }
-				identifier={marker.type}
+                identifier={marker.type}
                 pinColor={color}
             />
         })
@@ -520,7 +520,7 @@ export default class Home extends React.Component {
         return (
         <View style={styles.container}>
             <MapView ref={ref => { this.map = ref; }} 
-			    style={styles.map}
+                style={styles.map}
                 //region={this.state.region}
                 initialRegion={this.state.region}
                 showsUserLocation={true}

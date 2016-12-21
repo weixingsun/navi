@@ -170,14 +170,14 @@ module.exports = {
         height: 45,
         //fontSize: 12,
         padding: 4,
-		backgroundColor: '#f9f5ed',
+        backgroundColor: '#f9f5ed',
     },
-	place_switch:{
+    place_switch:{
         justifyContent: "center",
         alignItems: "center",
-		width:50,
-		backgroundColor:'#f9f5ed',
-	},
+        width:50,
+        backgroundColor:'#f9f5ed',
+    },
     home_right_icon: {
         //position: 'relative',
         ...Platform.select({

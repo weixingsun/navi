@@ -34,7 +34,7 @@ export default class Search extends React.Component {
             destLat: 0,
             destLng: 0,
             place_type: 'Destination',
-			my:'38.984942,-76.942706',
+            my:'38.984942,-76.942706',
         }
         this.ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
@@ -52,11 +52,11 @@ export default class Search extends React.Component {
             let my = this.props.my? this.props.my.lat+','+this.props.my.lng:this.state.my
             this.setState({
                 place_type: this.props.place_type,
-				my:my,
+                my:my,
             })
         }
         // update title
-		let title_suffix = this.props.place_type?this.props.place_type:this.state.place_type
+        let title_suffix = this.props.place_type?this.props.place_type:this.state.place_type
         Actions.refresh({
             title: title_pre + title_suffix,
         });
@@ -117,10 +117,10 @@ export default class Search extends React.Component {
     setPlaceInfo(json) {
         //this.appendHistoryDB(json);
         Actions.pop({ 
-		    refresh: { 
-		        place: json,  //new place
-			    route: null,  //clear previous route if have one
-		}})
+            refresh: { 
+                place: json,  //new place
+                route: null,  //clear previous route if have one
+        }})
     }
     /**
      * Main render

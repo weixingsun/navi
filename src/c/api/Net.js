@@ -7,13 +7,13 @@
  */
 
 module.exports = {
-	FREE_IP2LOC_HOST: 'http://freegeoip.net/json',
-	/**
-	 * Network REST api
-	 * @param {String} url
-	 * @param {JSON} data
-	 * @return {JSON} response, in promise
-	 */
+    FREE_IP2LOC_HOST: 'http://freegeoip.net/json',
+    /**
+     * Network REST api
+     * @param {String} url
+     * @param {JSON} data
+     * @return {JSON} response, in promise
+     */
     async netCmd(url, data) {
       try {
         let response = await fetch(url, data);
@@ -25,28 +25,28 @@ module.exports = {
         alert('Network Problem')
       }
     },
-	/**
-	 * Network REST.get api
-	 * @param {String} url
-	 * @return {JSON} response, in promise
-	 */
+    /**
+     * Network REST.get api
+     * @param {String} url
+     * @return {JSON} response, in promise
+     */
     _get(url) {
       return this.netCmd(url,{method:'get'});
     },
-	/**
-	 * Network REST.delete api by url
-	 * @param {String} url
-	 * @return {JSON} response, in promise
-	 */
+    /**
+     * Network REST.delete api by url
+     * @param {String} url
+     * @return {JSON} response, in promise
+     */
     _del(url) {
       return this.netCmd(url,{method:'delete'});
     },
-	/**
-	 * Network REST.delete api by form
-	 * @param {String} url
-	 * @param {JSON} data
-	 * @return {JSON} response, in promise
-	 */
+    /**
+     * Network REST.delete api by form
+     * @param {String} url
+     * @param {JSON} data
+     * @return {JSON} response, in promise
+     */
     _del_body(url,data) {
       return this.netCmd(url,{
             method:'delete',
@@ -54,12 +54,12 @@ module.exports = {
             body: JSON.stringify(data)
         });
     },
-	/**
-	 * Network REST.put api by form
-	 * @param {String} url
-	 * @param {JSON} data
-	 * @return {JSON} response, in promise
-	 */
+    /**
+     * Network REST.put api by form
+     * @param {String} url
+     * @param {JSON} data
+     * @return {JSON} response, in promise
+     */
     _put(url,data) {
         return this.netCmd(url,{
             method:'put',
@@ -67,12 +67,12 @@ module.exports = {
             body: JSON.stringify(data)
         });
     },
-	/**
-	 * Network REST.post api by form
-	 * @param {String} url
-	 * @param {JSON} data
-	 * @return {JSON} response, in promise
-	 */
+    /**
+     * Network REST.post api by form
+     * @param {String} url
+     * @param {JSON} data
+     * @return {JSON} response, in promise
+     */
     _post(url, data) {
       return this.netCmd(url,{
           method:'post',
@@ -80,15 +80,15 @@ module.exports = {
           body: JSON.stringify(data)
       });
     },
-	/**
-	 * Get Coordinates from network api
-	 * @param {Function} func callback
-	 */
-	getNetLatLng(func){
-	    let url = this.FREE_IP2LOC_HOST
+    /**
+     * Get Coordinates from network api
+     * @param {Function} func callback
+     */
+    getNetLatLng(func){
+        let url = this.FREE_IP2LOC_HOST
         this._get(url).then((result)=>{
             //alert('Net.getLocationFromFreeHost()'+JSON.stringify(result))
-	        //console.log('Net.getLocationFromNetwork(free) '+JSON.stringify(result))
+            //console.log('Net.getLocationFromNetwork(free) '+JSON.stringify(result))
             if(result.latitude) {func(result)}
         })
     },
