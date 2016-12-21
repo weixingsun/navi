@@ -34,6 +34,7 @@ export default class Search extends React.Component {
             destLat: 0,
             destLng: 0,
             place_type: 'Destination',
+			my:'38.984942,-76.942706',
         }
         this.ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
@@ -48,9 +49,10 @@ export default class Search extends React.Component {
         //AsyncStorage.removeItem('search_history')
         let title_pre = 'Select a ' //will support i18n later
         if (this.props.place_type != null) {
-            //alert(this.props.place_type)
+            let my = this.props.my? this.props.my.lat+','+this.props.my.lng:this.state.my
             this.setState({
                 place_type: this.props.place_type,
+				my:my,
             })
         }
         // update title
@@ -147,11 +149,11 @@ export default class Search extends React.Component {
             value = {this.state.dest}
             query = {{
                 key: Google.key,
-                location: '38.984942,-76.942706', //this.state.pos.latitude+','+this.state.pos.longitude,
+                location: this.state.my, //this.state.pos.latitude+','+this.state.pos.longitude,
                 radius: 5000,
-                components: {
-                    country: 'US'
-                },
+                //components: {
+                //    country: 'US'
+                //},
             }}
             styles = {{
                 description: {

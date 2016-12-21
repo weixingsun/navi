@@ -7,6 +7,7 @@
  */
 
 module.exports = {
+	FREE_IP2LOC_HOST: 'http://freegeoip.net/json',
 	/**
 	 * Network REST api
 	 * @param {String} url
@@ -78,5 +79,17 @@ module.exports = {
           headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
           body: JSON.stringify(data)
       });
+    },
+	/**
+	 * Get Coordinates from network api
+	 * @param {Function} func callback
+	 */
+	getNetLatLng(func){
+	    let url = this.FREE_IP2LOC_HOST
+        this._get(url).then((result)=>{
+            //alert('Net.getLocationFromFreeHost()'+JSON.stringify(result))
+	    //console.log('Net.getLocationFromNetwork(free) '+JSON.stringify(result))
+            if(result.latitude) {func(result)}
+          })
     },
 }

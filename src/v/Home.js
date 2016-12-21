@@ -6,6 +6,7 @@ import MapView from 'react-native-maps';
 import Permissions from 'react-native-permissions';
 import styles from './Styles'
 import Google from '../c/api/Google'
+import Net from '../c/api/Net'
 import PolylineUtil from '../c/api/Polyline'
 import { Kohana } from 'react-native-textinput-effects';
 /**
@@ -50,6 +51,7 @@ export default class Home extends React.Component {
      */
     componentWillMount() {
         this.checkGpsPermission()
+		this.changeQueryIcon()
     }
     /**
      * Actions Entry
@@ -89,7 +91,7 @@ export default class Home extends React.Component {
      *         }
      */
     checkPlaceAction(props){
-        if(props.place!==null){
+        if(props.place!=null){
             //place = {address,lat,lng,type}  type = ['Destination','Start']
             if(props.place.type==='Destination'){
                 this.setState({
@@ -152,7 +154,7 @@ export default class Home extends React.Component {
      */
     changeQueryIcon(){
         Actions.refresh({
-            renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search() } accessible={true} accessibilityLabel={'SearchIcon'}  />,
+            renderRightButton: ()=> <Icon style={styles.home_right_icon} name={'search'} size={30} color={'#333'} onPress={()=> Actions.search({place_type:'Destination',my:this.state.my}) } accessible={true} accessibilityLabel={'SearchIcon'}  />,
             clear: 'restart',
         });
     }
@@ -165,23 +167,41 @@ export default class Home extends React.Component {
 		this.map.fitToSuppliedMarkers(markerIds, animated);
 	}
     /**
-     * For updating UI, translate gps latlng to readable current place name, exec only once
+     * For init start marker, translate latlng to readable current place name, exec only once
 	 * Use google reverse geocoding API
      * @param {JSON} latlng, position data from GPS
      */
-    setStartAddressLatLng(latlng){
+    setAddressByLatLng(latlng){
         Google.reverse_geocoding(latlng,(result)=>{
-          if(result){
-            let results = result.results
+          this.setMyPosition(latlng,result)
+        })
+    }
+    /**
+     * For init start marker, translate net latlng to readable current place name, exec only once
+     * @param {JSON} latlng, position data from GPS
+     */
+	getLatLngNet(){
+		Net.getNetLatLng((latlng)=>{
+			this.setAddressByLatLng(latlng)
+		})
+	}
+    /**
+     * Set my position, , exec only once
+	 * Use google reverse geocoding API
+     * @param {JSON} latlng, position data from GPS
+     */
+    setMyPosition(latlng,json){
+		if(json.results){
             let my = {
                 lat:latlng.latitude,
                 lng:latlng.longitude,
-                address: results[0].formatted_address,
+                address: json.results[0].formatted_address,
             }
+			alert(JSON.stringify(my))
             let start = {
                 lat:latlng.latitude,
                 lng:latlng.longitude,
-                address: results[0].formatted_address,
+                address: json.results[0].formatted_address,
 				type:'Start',
             }
 			let myregion = {
@@ -193,12 +213,11 @@ export default class Home extends React.Component {
             this.setState({ 
 				my:my,
 				start:start,
-				region:myregion,
+				//region:myregion,
 				markers:[start],
 			})
           }
-        })
-    }
+	}
 	switchStartDest(){
 		let start = this.state.dest
 		start.type='Start'
@@ -218,7 +237,7 @@ export default class Home extends React.Component {
         this.watchID = navigator.geolocation.watchPosition((position) => {
             //{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
             if(this.updateOnUI){
-                this.setStartAddressLatLng(position.coords)
+                this.setAddressLatLng(position.coords)
             }
             this.turnOffGps()
         },(error) => console.log(error.message),
@@ -239,8 +258,10 @@ export default class Home extends React.Component {
     checkGpsPermission(){
         Permissions.getPermissionStatus('location').then(response => {
             //['authorized', 'denied', 'restricted', 'undetermined']
-            if(response!=='authorized') this.askGpsPermission()
-            else this.turnOnGps()
+            if(response!=='authorized'){
+				this.askGpsPermission()
+				this.getLatLngNet()
+            }else this.turnOnGps()
         });
     }
     /**
@@ -261,17 +282,15 @@ export default class Home extends React.Component {
      * @param {null} but using internal state.start & state.dest
      */
     renderStartDest(){
-		//<TextInput style={styles.search_input} value={this.state.start.address} onFocus={()=>Actions.search({place_type:'Start'})} />
-		//<TextInput style={styles.search_input} value={this.state.dest.address} onFocus={Actions.search} />
         if(this.state.dest.address){
             return (
                 <View style={styles.inner_search}>
                     <View style={{flex:1}}>
 				    <Kohana style={styles.search_input} label={'Start'} iconClass={Icon} iconName={'circle-o'} iconColor={'#f4d29a'} 
-					  labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={()=>Actions.search({place_type:'Start'})} value={this.state.start.address} />
+					  labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={()=>Actions.search({place_type:'Start',my:this.state.my})} value={this.state.start.address} />
                     <View style={styles.separator}/>
 				    <Kohana style={styles.search_input} label={'Destination'} iconClass={Icon} iconName={'flag-o'} iconColor={'#f4d29a'} 
-					  labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={Actions.search} value={this.state.dest.address} />
+					  labelStyle={{ color: '#91627b' }} inputStyle={{ color: '#91627b' }} onFocus={()=>Actions.search({place_type:'Destination',my:this.state.my})} value={this.state.dest.address} />
                     </View>
 					<View style={styles.place_switch}>
 					    <Icon name={'retweet'} size={30} onPress={this.switchStartDest.bind(this)}/>
