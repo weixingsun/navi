@@ -167,6 +167,13 @@ export default class Home extends React.Component {
 		this.map.fitToSuppliedMarkers(markerIds, animated);
 	}
     /**
+     * Actions: focus current map to a place
+     * @param {JSON} latlng
+     */
+	animateTo(latlng) {
+		this.map.animateToRegion({...this.state.region,latitude:latlng.lat,longitude:latlng.lng});
+	}
+    /**
      * For init start marker, translate latlng to readable current place name, exec only once
 	 * Use google reverse geocoding API
      * @param {JSON} latlng, position data from GPS
@@ -187,8 +194,7 @@ export default class Home extends React.Component {
 	}
     /**
      * Set my position, , exec only once
-	 * Use google reverse geocoding API
-     * @param {JSON} latlng, position data from GPS
+     * @param {JSON} latlng, coordinates from Gps/Net
      */
     setMyPosition(latlng,json){
 		if(json.results){
@@ -197,7 +203,6 @@ export default class Home extends React.Component {
                 lng:latlng.longitude,
                 address: json.results[0].formatted_address,
             }
-			alert(JSON.stringify(my))
             let start = {
                 lat:latlng.latitude,
                 lng:latlng.longitude,
@@ -216,7 +221,8 @@ export default class Home extends React.Component {
 				//region:myregion,
 				markers:[start],
 			})
-          }
+			this.animateTo(my)
+        }
 	}
 	switchStartDest(){
 		let start = this.state.dest
@@ -228,6 +234,8 @@ export default class Home extends React.Component {
 			start,
 			dest,
 			markers,
+			steps:[],
+			mode:'',
 		})
 	}
     /**

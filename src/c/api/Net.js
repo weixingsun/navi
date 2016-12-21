@@ -88,8 +88,8 @@ module.exports = {
 	    let url = this.FREE_IP2LOC_HOST
         this._get(url).then((result)=>{
             //alert('Net.getLocationFromFreeHost()'+JSON.stringify(result))
-	    //console.log('Net.getLocationFromNetwork(free) '+JSON.stringify(result))
+	        //console.log('Net.getLocationFromNetwork(free) '+JSON.stringify(result))
             if(result.latitude) {func(result)}
-          })
+        })
     },
 }
