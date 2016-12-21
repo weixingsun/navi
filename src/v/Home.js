@@ -245,7 +245,7 @@ export default class Home extends React.Component {
         this.watchID = navigator.geolocation.watchPosition((position) => {
             //{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
             if(this.updateOnUI){
-                this.setAddressLatLng(position.coords)
+                this.setAddressByLatLng(position.coords)
             }
             this.turnOffGps()
         },(error) => console.log(error.message),
