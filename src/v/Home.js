@@ -75,7 +75,7 @@ export default class Home extends React.Component {
             this.changeQueryIcon()
             this.setState({
                 dest:{},
-                markers:[],
+                markers:[this.state.start],
                 steps:[],
                 mode:'',
             })
@@ -92,19 +92,23 @@ export default class Home extends React.Component {
             //place = {address,lat,lng,type}  type = ['Destination','Start']
             if(props.place.type==='Destination'){
                 this.setState({
-                    markers:[props.place],
+                    markers:[this.state.start,props.place],
                     dest:props.place,
+                    steps:[],
+                    mode:'',
                     region:{...this.state.region,latitude:props.place.lat,longitude:props.place.lng},
                 })
                 this.changeClearIcon()
+				setTimeout(() =>  this.focusMap(['Start','Destination'], true), 500)
             }else if(props.place.type==='Start'){
                 this.setState({
-                    //markers:[props.dest],
+                    markers:[this.state.dest,props.place],
                     start:props.place,
                     steps:[],
                     mode:'',
                     //region:{...this.state.region,latitude:props.place.lat,longitude:props.place.lng},
                 })
+				setTimeout(() =>  this.focusMap(['Start','Destination'], true), 500)
             }
         }
     }
@@ -118,7 +122,7 @@ export default class Home extends React.Component {
      */
     checkRouteAction(props){
         if(props.route){
-            let r = props.route   // {start,dest,mode}  // mode=[driving,transit,walking]
+		    let r = props.route   // {start,dest,mode}  // mode=[driving,transit,walking]
             Google.route(r.start,r.dest,r.mode,(result)=>{
                 this.renderRoute(r.mode,result)
             })
@@ -152,6 +156,14 @@ export default class Home extends React.Component {
         });
     }
     /**
+     * Actions: focus current map to fit all markers
+     * @param {null}
+     */
+	focusMap(markerIds, animated) {
+		//console.log(`Markers received to populate map: ${markers}`);
+		this.map.fitToSuppliedMarkers(markerIds, animated);
+	}
+    /**
      * For updating UI, translate gps latlng to readable current place name, exec only once
 	 * Use google reverse geocoding API
      * @param {JSON} latlng, position data from GPS
@@ -165,13 +177,24 @@ export default class Home extends React.Component {
                 lng:latlng.longitude,
                 address: results[0].formatted_address,
             }
+            let start = {
+                lat:latlng.latitude,
+                lng:latlng.longitude,
+                address: results[0].formatted_address,
+				type:'Start',
+            }
 			let myregion = {
                 latitude:latlng.latitude,
                 longitude:latlng.longitude,
                 latitudeDelta: 0.1,
                 longitudeDelta: 0.1,
 			}
-            this.setState({ my:my,start:my,region:myregion })
+            this.setState({ 
+				my:my,
+				start:start,
+				region:myregion,
+				markers:[start],
+			})
           }
         })
     }
@@ -261,12 +284,12 @@ export default class Home extends React.Component {
         let secondhalf = name.substr(this.getMiddleIndex(name)+1).trim()
         if(name.length<30) return <Text style={styles.address}>{name}</Text>
         else if(firsthalf.length<30) return (
-            <View style={{marginTop:15}}>
+            <View style={{marginTop:10}}>
                 <Text style={styles.home_place_address}>{firsthalf}</Text>
                 <Text style={styles.home_place_address}>{secondhalf}</Text>
             </View>)
         else{return (
-            <View style={{marginTop:15}}>
+            <View style={{marginTop:10}}>
                 <Text style={styles.home_place_address}>{firsthalf.substr(0,this.getMiddleIndex(firsthalf))}</Text>
                   <Text style={styles.home_place_address}>{firsthalf.substr(this.getMiddleIndex(firsthalf)+1).trim()}</Text>
                 <Text style={styles.home_place_address}>{secondhalf}</Text>
@@ -285,7 +308,7 @@ export default class Home extends React.Component {
             return (
                 <View style={styles.inner_place}>
                     <View>
-                        <View style={{flexDirection:'row',marginTop:15,}}>
+                        <View style={{flexDirection:'row',marginTop:10,}}>
                             <Icon style={{marginLeft:10}} name={'car'}  color={carColor} size={40} onPress={this.routeCar.bind(this)} accessible={true} accessibilityLabel={'DrivingIcon'} />
                             <Icon style={{marginLeft:30}} name={'bus'}  color={busColor} size={40} onPress={this.routeBus.bind(this)} accessible={true} accessibilityLabel={'TransitIcon'} />
                             <Icon style={{marginLeft:32}} name={'male'} color={walkColor} size={40} onPress={this.routeWalk.bind(this)} accessible={true} accessibilityLabel={'WalkingIcon'} />
@@ -293,9 +316,8 @@ export default class Home extends React.Component {
                         {this.renderAddress(this.state.dest.address)}
                     </View>
                     <View style={{flex:1}} />
-                    <View style={{alignItems:"flex-end",marginTop:15,marginRight:30,}}>
+                    <View style={{alignItems:"flex-end",marginTop:10,marginRight:30,}}>
                         <Icon name={'play'} size={40} onPress={this.startRoute.bind(this)} />
-                        <Text> </Text>
                         <Text>{this.state.distance}</Text>
                         <Text>{this.state.duration}</Text>
                     </View>
@@ -412,12 +434,15 @@ export default class Home extends React.Component {
      */
     renderMarkers(){
         return this.state.markers.map((marker,i)=>{
+			let color = '#ff0000'
+			if(marker.type==='Start') color = '#0000ff'
             return <MapView.Marker
                 key={i}
                 coordinate={{latitude:marker.lat, longitude:marker.lng}}
                 //image={ placeIcon }
-                //onPress={ ()=> this.showMsgByKey(key) }
-                pinColor={'#ff0000'}
+                onPress={ ()=> console.log('clicked '+marker.type) }
+				identifier={marker.type}
+                pinColor={color}
             />
         })
     }
@@ -427,7 +452,8 @@ export default class Home extends React.Component {
     render(){
         return (
         <View style={styles.container}>
-            <MapView style={styles.map}
+            <MapView ref={ref => { this.map = ref; }} 
+			    style={styles.map}
                 region={this.state.region}
                 initialRegion={this.state.region}
                 showsUserLocation={true}

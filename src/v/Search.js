@@ -112,9 +112,13 @@ export default class Search extends React.Component {
      * Action: user select a place from suggestion search result
      * @param {JSON} json  user selected place
      */
-    setDestination(json) {
+    setPlaceInfo(json) {
         //this.appendHistoryDB(json);
-        Actions.pop({ refresh: { place: json } })
+        Actions.pop({ 
+		    refresh: { 
+		        place: json,  //new place
+			    route: null,  //clear previous route if have one
+		}})
     }
     /**
      * Main render
@@ -129,14 +133,14 @@ export default class Search extends React.Component {
             fetchDetails = {true} //for getting latlng, compatible with other map providers
             onPress = {
                 (data, details = {}) => { // details is provided when fetchDetails = true
-                    let dest_latlng = {
+                    let place_latlng = {
                         type: this.state.place_type,
                         address: data.description,
                         lat: details.geometry.location.lat,
                         lng: details.geometry.location.lng,
                         //type:details.types,
                     }
-                    this.setDestination(dest_latlng)
+                    this.setPlaceInfo(place_latlng)
                 }
             }
             name = {'dest'}

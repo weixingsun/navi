@@ -128,7 +128,7 @@ module.exports = {
         //flex:1,
         flexDirection: 'row',
         backgroundColor: 'white',
-        height: 150,
+        height: 100,
         position: 'absolute',
         //top: 550,
         left: 0,
@@ -156,8 +156,8 @@ module.exports = {
     },
     home_place_address: {
         //fontWeight:'bold',
-        fontSize: 14,
-        marginTop: 5,
+        fontSize: 12,
+        marginTop: 3,
         marginLeft: 5,
     },
     search_icon: {
