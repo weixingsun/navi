@@ -165,8 +165,13 @@ export default class Home extends React.Component {
                 lng:latlng.longitude,
                 address: results[0].formatted_address,
             }
-            let start = my
-            this.setState({ my,start })
+			let myregion = {
+                latitude:latlng.latitude,
+                longitude:latlng.longitude,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1,
+			}
+            this.setState({ my:my,start:my,region:myregion })
           }
         })
     }
