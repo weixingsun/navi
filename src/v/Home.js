@@ -3,13 +3,14 @@ import {Dimensions, ListView, Platform, StyleSheet, Text, TextInput, TouchableHi
 import {Actions} from "react-native-router-flux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
-import Permissions from 'react-native-permissions';
 import styles from './Styles'
 import Google from '../c/api/Google'
 import Net from '../c/api/Net'
+import Gps from '../c/api/Gps'
+import Route from '../c/Route'
+import Tools from '../c/Tools'
 import PolylineUtil from '../c/api/Polyline'
 import { Kohana } from 'react-native-textinput-effects';
-import LocationServiceDialogBox from 'react-native-android-location-services-dialog-box'
 /**
  * Home page
  * Project: navi
@@ -39,20 +40,27 @@ export default class Home extends React.Component {
             mode:'',
         }
         this.updateOnUI=true
-        this.turnOnGps=this.turnOnGps.bind(this)
     }
     /**
      * Cleaning GPS and UI update switch
      */
-    componentWillUnmount() { 
-        this.turnOffGps();
+    componentWillUnmount() {
         this.updateOnUI=false
     }
     /**
      * Entry for launching app
      */
     componentWillMount() {
-        this.checkGpsPermission()
+        
+        Gps.getLatLngNet((latlng)=>{
+            latlng['from'] = 'net'
+            this.setAddressByLatLng(latlng)
+        })
+        Gps.checkGps(navigator,(latlng)=>{ //success
+            this.setAddressByLatLng(latlng)
+        },(failed)=>{
+            alert('Unable to get latlng from your device')
+        })
         this.changeQueryIcon()
     }
     /**
@@ -63,7 +71,7 @@ export default class Home extends React.Component {
         this.processNewProps(nextProps)
     }
     /**
-     * Actions switch: all user actions goes here
+     * Actions receiver: all user actions goes here
      * @param {JSON} nextProps in types of [clear,place,route]
      */
     processNewProps(nextProps){
@@ -118,7 +126,7 @@ export default class Home extends React.Component {
         }
     }
     /**
-     * Action: when user route to a place: from start to destination, will extract into Tool/API class
+     * Action: when user route to a place: from start to destination,
      * @param {JSON} props = {
      *           start:{type,lat,lng,address},
      *           dest:{type,lat,lng,address},
@@ -126,11 +134,8 @@ export default class Home extends React.Component {
      *         }
      */
     checkRouteAction(props){
-        if(props.route){
-            let r = props.route   // {start,dest,mode}  // mode=[driving,transit,walking]
-            Google.route(r.start,r.dest,r.mode,(result)=>{
-                this.renderRoute(r.mode,result)
-            })
+        if(props.route_result){
+            this.renderRoute( props.route_result.mode, props.route_result.result )
         }
     }
     /**
@@ -181,17 +186,9 @@ export default class Home extends React.Component {
      * @param {JSON} latlng, position data from GPS
      */
     setAddressByLatLng(latlng){
+        if(this.state.my.lat && latlng['from'] == 'net') return //make sure network latlng not cover the real device gps
         Google.reverse_geocoding(latlng,(result)=>{
           this.setMyPosition(latlng,result)
-        })
-    }
-    /**
-     * For init start marker, translate net latlng to readable current place name, exec only once
-     * @param {JSON} latlng, position data from GPS
-     */
-    getLatLngNet(){
-        Net.getNetLatLng((latlng)=>{
-            this.setAddressByLatLng(latlng)
         })
     }
     /**
@@ -224,8 +221,14 @@ export default class Home extends React.Component {
                 markers:[start],
             })
             this.animateTo(my)
+        }else{
+            //alert('setMyPosition '+JSON.stringify(json))
         }
     }
+    /**
+     * Switch start destination values, also need switch marker names
+     * @param {null}
+     */
     switchStartDest(){
         let start = this.state.dest
         start.type='Start'
@@ -239,75 +242,6 @@ export default class Home extends React.Component {
             steps:[],
             mode:'',
         })
-    }
-    /**
-     * Gps settings check on launch
-     * @param {null}
-     */
-    enableGps(){
-        LocationServiceDialogBox.checkLocationServicesIsEnabled({
-            message:'<h2>Location service disabled</h2>This app want to use your location',
-            ok:'Yes',
-            cancel:'No',
-        }).then((success)=>{
-            this.turnOnGps()
-        }).catch((reject)=>{
-            //alert('reject')
-            this.getLatLngNet()
-        })
-    }
-    /**
-     * GPS switch on
-     */
-    turnOnGps(){
-        this.watchID = navigator.geolocation.getCurrentPosition((position) => {
-            //{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
-            if(this.updateOnUI){
-                this.setAddressByLatLng(position.coords)
-            }
-            this.turnOffGps()
-        },(error) => {  //{code,message}
-            if(error.code===1) this.enableGps()
-            //else alert(JSON.stringify(error))
-        },{enableHighAccuracy: false, timeout: 10000, maximumAge: 5000, distanceFilter:200},
-        );
-    }
-    /**
-     * GPS switch off
-     */
-    turnOffGps(){
-        if(this.watchID==null) return
-        navigator.geolocation.clearWatch(this.watchID);
-    }
-    /**
-     * Permission checker, works for both android/ios
-     * refer to: react-native-permissions
-     */
-    checkGpsPermission(){
-        let self=this
-        Permissions.getPermissionStatus('location').then(response => {
-            //['authorized', 'denied', 'restricted', 'undetermined']
-            if(response!=='authorized'){
-                self.askGpsPermission()
-                self.getLatLngNet()
-            }else{
-                //alert('checkGpsPermission.turnOnGps')
-                self.turnOnGps()
-            }
-        }).catch(error=>alert('Check GPS permission failed'));
-    }
-    /**
-     * Request GPS permission, works for both android/ios
-     * refer to: react-native-permissions
-     */
-    askGpsPermission(){
-        Permissions.requestPermission('location').then(response => {
-            //['authorized', 'denied', 'restricted', 'undetermined']
-            if(response==='authorized'){
-                this.turnOnGps()
-                this.setState({ gpsPermission: response })
-            }
-        }).catch(error=>alert('Request GPS permission failed'));
     }
     /**
      * UI render: after chosen a place, show two inputs fields under navbar, like google maps
@@ -332,23 +266,12 @@ export default class Home extends React.Component {
         }
     }
     /**
-     * Tools: for spliting address name into several lines, will extract to tools class later
-     * @param {String} address name
-     * @return {Number} the "," index in middle of address
-     */
-    getMiddleIndex(name){
-        let arr = name.split(',')
-        let half = arr.length/2
-        arr = arr.slice(0, half);
-        return arr.join(',').length
-    }
-    /**
      * UI render: after chosen a place, show place detail info on bottom, like google maps
      * @param {String} name of address
      */
     renderAddress(name){
-        let firsthalf = name.substr(0,this.getMiddleIndex(name)).trim()
-        let secondhalf = name.substr(this.getMiddleIndex(name)+1).trim()
+        let firsthalf = name.substr(0,Tools.getMiddleIndex(name)).trim()
+        let secondhalf = name.substr(Tools.getMiddleIndex(name)+1).trim()
         if(name.length<30) return <Text style={styles.address}>{name}</Text>
         else if(firsthalf.length<30) return (
             <View style={{marginTop:10}}>
@@ -357,8 +280,8 @@ export default class Home extends React.Component {
             </View>)
         else{return (
             <View style={{marginTop:10}}>
-                <Text style={styles.home_place_address}>{firsthalf.substr(0,this.getMiddleIndex(firsthalf))}</Text>
-                  <Text style={styles.home_place_address}>{firsthalf.substr(this.getMiddleIndex(firsthalf)+1).trim()}</Text>
+                <Text style={styles.home_place_address}>{firsthalf.substr(0,Tools.getMiddleIndex(firsthalf))}</Text>
+                  <Text style={styles.home_place_address}>{firsthalf.substr(Tools.getMiddleIndex(firsthalf)+1).trim()}</Text>
                 <Text style={styles.home_place_address}>{secondhalf}</Text>
             </View>)
         }
@@ -376,15 +299,21 @@ export default class Home extends React.Component {
                 <View style={styles.inner_place}>
                     <View>
                         <View style={{flexDirection:'row',marginTop:10,}}>
-                            <Icon style={{marginLeft:10}} name={'car'}  color={carColor} size={40} onPress={this.routeCar.bind(this)} accessible={true} accessibilityLabel={'DrivingIcon'} />
-                            <Icon style={{marginLeft:30}} name={'bus'}  color={busColor} size={40} onPress={this.routeBus.bind(this)} accessible={true} accessibilityLabel={'TransitIcon'} />
-                            <Icon style={{marginLeft:32}} name={'male'} color={walkColor} size={40} onPress={this.routeWalk.bind(this)} accessible={true} accessibilityLabel={'WalkingIcon'} />
+                            <Icon style={{marginLeft:10}} name={'car'}  color={carColor} size={40} accessible={true} accessibilityLabel={'DrivingIcon'}
+                                onPress={()=>Route.route( this.state.start, this.state.dest, 'driving')}
+                            />
+                            <Icon style={{marginLeft:30}} name={'bus'}  color={busColor} size={40} accessible={true} accessibilityLabel={'TransitIcon'} 
+                                onPress={()=>Route.route( this.state.start, this.state.dest, 'transit')}
+                            />
+                            <Icon style={{marginLeft:32}} name={'male'} color={walkColor} size={40} accessible={true} accessibilityLabel={'WalkingIcon'} 
+                                onPress={()=>Route.route( this.state.start, this.state.dest, 'walking')} 
+                            />
                         </View>
                         {this.renderAddress(this.state.dest.address)}
                     </View>
                     <View style={{flex:1}} />
                     <View style={{alignItems:"flex-end",marginTop:10,marginRight:30,}}>
-                        <Icon name={'play'} size={40} onPress={this.startRoute.bind(this)} />
+                        <Icon name={'play'} size={40} onPress={Route.startRouteMode} />
                         <Text>{this.state.distance}</Text>
                         <Text>{this.state.duration}</Text>
                     </View>
@@ -403,52 +332,6 @@ export default class Home extends React.Component {
         } else {
             return 'gray'
         }
-    }
-    /**
-     * Action: for navigation mode, fake it for now
-     * @param {null}
-     */
-    startRoute(){
-        alert('start routing')
-    }
-    /**
-     * Action switch: for driving route, will merge three route functions into 1
-     * @param {null} but using internal state
-     */
-    routeCar(){
-        Actions.refresh({
-            route: {
-                start:this.state.start,
-                dest: this.state.dest,
-                mode: 'driving',
-            }
-        })
-    }
-    /**
-     * Action switch: for transit route, will merge three route functions into 1
-     * @param {null} but using internal state
-     */
-    routeBus(){
-        Actions.refresh({
-            route: {
-                start:this.state.start,
-                dest: this.state.dest,
-                mode: 'transit',
-            }
-        })
-    }
-    /**
-     * Action switch: for walking route, will merge three route functions into 1
-     * @param {null} but using internal state
-     */
-    routeWalk(){
-        Actions.refresh({
-            route: {
-                start:this.state.start,
-                dest: this.state.dest,
-                mode: 'walking',
-            }
-        })
     }
     /**
      * UI change: after all three route modes
