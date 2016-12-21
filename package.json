@@ -10,6 +10,7 @@
     "key-mirror": "^1.0.1",
     "react": "15.4.1",
     "react-native": "0.39.2",
+    "react-native-android-location-services-dialog-box": "^1.1.8",
     "react-native-button": "^1.7.1",
     "react-native-drawer": "^2.3.0",
     "react-native-i18n": "^0.1.1",

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.chirag.RNMail.RNMail;
 import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.i18n.reactnativei18n.ReactNativeI18n;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new LocationServicesDialogBoxPackage(),
             new RNMail(),
             new ReactNativePermissionsPackage(),
             new ReactNativeI18n(),

@@ -9,6 +9,7 @@ import Google from '../c/api/Google'
 import Net from '../c/api/Net'
 import PolylineUtil from '../c/api/Polyline'
 import { Kohana } from 'react-native-textinput-effects';
+import LocationServiceDialogBox from 'react-native-android-location-services-dialog-box'
 /**
  * Home page
  * Project: navi
@@ -38,6 +39,7 @@ export default class Home extends React.Component {
             mode:'',
         }
         this.updateOnUI=true
+		this.turnOnGps=this.turnOnGps.bind(this)
     }
     /**
      * Cleaning GPS and UI update switch
@@ -239,17 +241,35 @@ export default class Home extends React.Component {
 		})
 	}
     /**
+     * Gps settings check on launch
+     * @param {null}
+     */
+	enableGps(){
+		LocationServiceDialogBox.checkLocationServicesIsEnabled({
+			message:'<h2>Location service disabled</h2>This app want to use your location',
+			ok:'Yes',
+			cancel:'No',
+		}).then((success)=>{
+			this.turnOnGps()
+		}).catch((reject)=>{
+			//alert('reject')
+			this.getLatLngNet()
+		})
+	}
+    /**
      * GPS switch on
      */
     turnOnGps(){
-        this.watchID = navigator.geolocation.watchPosition((position) => {
+        this.watchID = navigator.geolocation.getCurrentPosition((position) => {
             //{timestamp,{coords:{speed,heading,accuracy,longitude,latitude,altitude}}}
             if(this.updateOnUI){
                 this.setAddressByLatLng(position.coords)
             }
             this.turnOffGps()
-        },(error) => console.log(error.message),
-            {enableHighAccuracy: false, timeout: 10000, maximumAge: 5000, distanceFilter:100},
+        },(error) => {  //{code,message}
+			if(error.code===1) this.enableGps()
+			//else alert(JSON.stringify(error))
+		},{enableHighAccuracy: false, timeout: 10000, maximumAge: 5000, distanceFilter:200},
         );
     }
     /**
@@ -264,13 +284,17 @@ export default class Home extends React.Component {
 	 * refer to: react-native-permissions
      */
     checkGpsPermission(){
+		let self=this
         Permissions.getPermissionStatus('location').then(response => {
             //['authorized', 'denied', 'restricted', 'undetermined']
             if(response!=='authorized'){
-				this.askGpsPermission()
-				this.getLatLngNet()
-            }else this.turnOnGps()
-        });
+				self.askGpsPermission()
+				self.getLatLngNet()
+            }else{
+				//alert('checkGpsPermission.turnOnGps')
+				self.turnOnGps()
+			}
+        }).catch(error=>alert('Check GPS permission failed'));
     }
     /**
      * Request GPS permission, works for both android/ios
@@ -283,7 +307,7 @@ export default class Home extends React.Component {
                 this.turnOnGps()
                 this.setState({ gpsPermission: response })
             }
-        });
+        }).catch(error=>alert('Request GPS permission failed'));
     }
     /**
      * UI render: after chosen a place, show two inputs fields under navbar, like google maps

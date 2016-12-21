@@ -135,6 +135,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-android-location-services-dialog-box')
     compile project(':react-native-mail')
     compile project(':react-native-permissions')
     compile project(':react-native-i18n')
