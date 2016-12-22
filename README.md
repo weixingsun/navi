@@ -10,25 +10,19 @@ function 4: Show one route on the map between current location and destination, 
 
 function 5: Choosing other modes could display one corresponding route on the map
 
-function 6: User can reverse current and destination location (wip)
-
-function 7: Share the route to others (wip)
-
+function 6: User can reverse current and destination location
 
 non-functional 1: unit test using jest, all cases in __tests__ , all passed
 
 non-functional 2: end2end test using appium, https://github.com/weixingsun/navi_appium, all passed
 
-non-functional 3: supported OS: ios, android
-
-non-functional 4: eslint (wip)
-
+non-functional 3: supported OS: ios 10+, android 4.4+
 
 How to install:
 
 1. git clone 
 
-2. npm i --save
+2. cd navi && npm i --save
 
 3. react-native run-android ( --variant=release )
 
